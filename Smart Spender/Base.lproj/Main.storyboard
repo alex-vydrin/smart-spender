@@ -14,13 +14,42 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="Cell Delete" translatesAutoresizingMaskIntoConstraints="NO" id="Bym-g7-bnk">
+                                <rect key="frame" x="215" y="411" width="105" height="69"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="Group" translatesAutoresizingMaskIntoConstraints="NO" id="axH-XG-sw6">
+                                <rect key="frame" x="0.0" y="205" width="320" height="206"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="Toolbar Label" translatesAutoresizingMaskIntoConstraints="NO" id="1Wu-5K-zsv">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="64"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="Rectangle 103" translatesAutoresizingMaskIntoConstraints="NO" id="j2Q-1S-TUU">
+                                <rect key="frame" x="160" y="141" width="160" height="64"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="Rectangle 103" translatesAutoresizingMaskIntoConstraints="NO" id="zOT-kd-RY1">
+                                <rect key="frame" x="0.0" y="141" width="160" height="64"/>
+                            </imageView>
+                            <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" fixedFrame="YES" image="Rectangle 102" translatesAutoresizingMaskIntoConstraints="NO" id="Lcg-qs-mNr">
+                                <rect key="frame" x="0.0" y="411" width="216" height="69"/>
+                            </imageView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
+                    <simulatedScreenMetrics key="simulatedDestinationMetrics"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="375" y="599"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Cell Delete" width="105" height="69"/>
+        <image name="Group" width="320" height="206"/>
+        <image name="Rectangle 102" width="216" height="69"/>
+        <image name="Rectangle 103" width="160" height="64"/>
+        <image name="Toolbar Label" width="320" height="64"/>
+    </resources>
 </document>
