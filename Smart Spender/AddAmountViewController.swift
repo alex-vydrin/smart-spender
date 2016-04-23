@@ -1,17 +1,26 @@
 //
-//  ViewController.swift
+//  AddAmountViewController.swift
 //  Smart Spender
 //
-//  Created by Alex on 20.04.16.
+//  Created by Alex on 22.04.16.
 //  Copyright © 2016 AppStory. All rights reserved.
 //
 
 import UIKit
 
-class ViewController: UIViewController {
+class AddAmountViewController: UIViewController {
+    
+    @IBOutlet weak var scoreboardLabel: UILabel!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        
+        // Do any additional setup after loading the view.
+    }
     
     var number = ""
-    var expenses = [Int]()
+    var expenses = [Double]()
     
     @IBAction func numButtons(sender: UIButton) { // Adds numbers from buttons to the label.
         number += "\(sender.currentTitle!)"
@@ -32,8 +41,6 @@ class ViewController: UIViewController {
     @IBAction func saveAddAnotherButton(sender: UIButton) {
         saveScoreboardNumber()
         resetScoreboardLabel()
-        print(expenses)
-        
     }
     
     @IBAction func removeNum(sender: UIButton) { // Removes rightmost number from the label. When last number removed updates label to "0".
@@ -48,17 +55,10 @@ class ViewController: UIViewController {
         }
     }
     
-    
-    @IBAction func clearButton(sender: AnyObject) {
+    @IBAction func clearButton(sender: AnyObject) { // Reset scoreboard.
         resetScoreboardLabel()
     }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        
-    }
-    
+
     func resetScoreboardLabel() {
         scoreboardLabel.text = "0"
         number = ""
@@ -66,8 +66,12 @@ class ViewController: UIViewController {
     
     func saveScoreboardNumber() {
         if Int(number) > 0 {
-            expenses.append(Int(number)!)
+            expenses.append(Double(number)!)
         }
+    }
+    
+    func changeButton() {
+        
     }
     
     func addComa (num: String) ->String {
@@ -79,13 +83,20 @@ class ViewController: UIViewController {
             if i%3 == 0 && num.characters.count > i {
                 newNum = " " + newNum
             }
-            
         }
         return newNum
     }
-    
-    @IBOutlet weak var scoreboardLabel: UILabel!
-    
-    
-}
 
+
+    
+    // MARK: - Navigation
+    
+    /*
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
+}
