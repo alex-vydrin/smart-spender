@@ -14,22 +14,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var editButton: UIBarButtonItem!
-    
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-       
-        cell.textLabel?.text = trips[indexPath.row]
-        
-        return cell
-    }
-    
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return trips.count
-    }
-    
-    
-    
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,48 +25,53 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @IBAction func newTripButton(sender: UIButton) {
+        
     }
 
     @IBAction func editTripsButton(sender: AnyObject) {
-        if editButton.title == "Done" {
-            editButton.title = "Edit"
-        } else {
-            editButton.title = "Done"
-        }
-        
         if tableView.editing == true {
             tableView.setEditing(false, animated: true)
+            editButton.title = "Edit"
         } else {
             tableView.setEditing(true, animated: true)
+            editButton.title = "Done"
         }
     }
     
-    
-    
-    func tableView(tableView: UITableView, editingStyleForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCellEditingStyle {
-        return UITableViewCellEditingStyle.None
+    // MARK: - tableView functions
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        
+        cell.textLabel?.text = trips[indexPath.row]
+        
+        return cell
     }
     
-    // Определяет какие ряды можно двигать
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return trips.count
+    }
+    
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
     
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            trips.removeAtIndex(indexPath.row)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        } 
+    }
+    
     func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return false
+        return true
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
         let itemToMove = trips[sourceIndexPath.row]
         trips.removeAtIndex(sourceIndexPath.row)
         trips.insert(itemToMove, atIndex: destinationIndexPath.row)
-        
         self.tableView.reloadData()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
 

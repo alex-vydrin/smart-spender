@@ -243,7 +243,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="382" y="576"/>
+            <point key="canvasLocation" x="309" y="413"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="pET-gh-e65">
@@ -410,7 +410,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NUC-Wq-IKl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="759" y="576"/>
+            <point key="canvasLocation" x="686" y="413"/>
         </scene>
         <!--Trips-->
         <scene sceneID="QYn-GN-xkD">
@@ -445,11 +445,11 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="H79-Bx-zHi">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" id="H79-Bx-zHi" customClass="TripTableViewCell" customModule="Smart_Spender" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="320" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="H79-Bx-zHi" id="Djr-IT-iDr">
-                                            <rect key="frame" x="0.0" y="0.0" width="287" height="44"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="253" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -469,7 +469,7 @@
                                 </state>
                                 <connections>
                                     <action selector="newTripButton:" destination="eYM-eN-3BR" eventType="touchUpInside" id="5WP-v5-swm"/>
-                                    <segue destination="n3Z-rl-n2U" kind="show" id="yLT-iL-Wsy"/>
+                                    <segue destination="gTg-qb-F0Z" kind="show" id="XIw-4t-yYu"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -493,23 +493,54 @@
             </objects>
             <point key="canvasLocation" x="486" y="1185"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="pt7-Gw-etH">
+        <!--Add New Trip-->
+        <scene sceneID="Wsg-Fk-I4i">
             <objects>
-                <viewController id="n3Z-rl-n2U" sceneMemberID="viewController">
+                <viewController id="gTg-qb-F0Z" customClass="AddNewTripViewController" customModule="Smart_Spender" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="QBc-AN-THn"/>
-                        <viewControllerLayoutGuide type="bottom" id="D1d-e9-yjC"/>
+                        <viewControllerLayoutGuide type="top" id="SXM-wl-1x1"/>
+                        <viewControllerLayoutGuide type="bottom" id="ikr-s5-gx7"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="21k-NA-kHu">
+                    <view key="view" contentMode="scaleToFill" id="qGs-hm-cpr">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="480"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter trip name" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Dig-rQ-QPW">
+                                <rect key="frame" x="20" y="91" width="280" height="30"/>
+                                <nil key="textColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Start Date" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="K1F-Se-qbx">
+                                <rect key="frame" x="20" y="168" width="280" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="End Date" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="VfY-rR-7TJ">
+                                <rect key="frame" x="20" y="206" width="280" height="30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Add New Trip" id="EA7-gq-MS0">
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="HSS-xg-mlL">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="editTripsButton:" destination="eYM-eN-3BR" id="3sM-gG-xcM"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="endDateTextField" destination="VfY-rR-7TJ" id="JrY-p9-ucq"/>
+                        <outlet property="startDateTextField" destination="K1F-Se-qbx" id="Kxf-8b-ZTu"/>
+                        <outlet property="tripNameTaxtField" destination="Dig-rQ-QPW" id="dr0-gN-VZ7"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="4Fd-dF-eZk" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="c6U-HF-H8e" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="887" y="1185"/>
+            <point key="canvasLocation" x="895" y="1185"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="8MV-7g-Inf">

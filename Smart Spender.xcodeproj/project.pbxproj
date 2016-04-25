@@ -14,6 +14,8 @@
 		1B05331F1CC9EBAD00208712 /* AddAmountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B05331E1CC9EBAD00208712 /* AddAmountViewController.swift */; };
 		1B0533211CC9EE0600208712 /* TableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0533201CC9EE0600208712 /* TableViewController.swift */; };
 		1B0533251CCA399F00208712 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B0533241CCA399F00208712 /* MainViewController.swift */; };
+		1B370B6C1CCD32BA003F21C6 /* TripTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B370B6B1CCD32BA003F21C6 /* TripTableViewCell.swift */; };
+		1B370B701CCE09CF003F21C6 /* AddNewTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B370B6F1CCE09CF003F21C6 /* AddNewTripViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +28,8 @@
 		1B05331E1CC9EBAD00208712 /* AddAmountViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddAmountViewController.swift; sourceTree = "<group>"; };
 		1B0533201CC9EE0600208712 /* TableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewController.swift; sourceTree = "<group>"; };
 		1B0533241CCA399F00208712 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainViewController.swift; path = ../MainViewController.swift; sourceTree = "<group>"; };
+		1B370B6B1CCD32BA003F21C6 /* TripTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TripTableViewCell.swift; sourceTree = "<group>"; };
+		1B370B6F1CCE09CF003F21C6 /* AddNewTripViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTripViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +62,8 @@
 		1B0532FB1CC7FA3100208712 /* Smart Spender */ = {
 			isa = PBXGroup;
 			children = (
+				1B370B6F1CCE09CF003F21C6 /* AddNewTripViewController.swift */,
+				1B370B6B1CCD32BA003F21C6 /* TripTableViewCell.swift */,
 				1B0533241CCA399F00208712 /* MainViewController.swift */,
 				1B0532FC1CC7FA3100208712 /* AppDelegate.swift */,
 				1B05331E1CC9EBAD00208712 /* AddAmountViewController.swift */,
@@ -141,9 +147,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1B370B6C1CCD32BA003F21C6 /* TripTableViewCell.swift in Sources */,
 				1B05331F1CC9EBAD00208712 /* AddAmountViewController.swift in Sources */,
 				1B0533211CC9EE0600208712 /* TableViewController.swift in Sources */,
 				1B0532FD1CC7FA3100208712 /* AppDelegate.swift in Sources */,
+				1B370B701CCE09CF003F21C6 /* AddNewTripViewController.swift in Sources */,
 				1B0533251CCA399F00208712 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
