@@ -10,46 +10,35 @@ import UIKit
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    var trips = ["Budapest", "Paris"]
+    var tripData = MyTrip()
+    var tripsListForTable = [String]()
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var editButton: UIBarButtonItem!
-   
+
+    override func viewWillAppear(animated: Bool) {
+        settingTable ()
+        tableView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.hidesBackButton = true
+        settingUpNavigationBar()
         self.tableView.tableFooterView = UIView(frame: CGRectZero)
-        self.title = "Trips"
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
-        self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        addEditButton()
     }
     
     @IBAction func newTripButton(sender: UIButton) {
-        
     }
 
-    @IBAction func editTripsButton(sender: AnyObject) {
-        if tableView.editing == true {
-            tableView.setEditing(false, animated: true)
-            editButton.title = "Edit"
-        } else {
-            tableView.setEditing(true, animated: true)
-            editButton.title = "Done"
-        }
-    }
-    
     // MARK: - tableView functions
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-        
-        cell.textLabel?.text = trips[indexPath.row]
-        
+        cell.textLabel?.text = tripsListForTable[indexPath.row]
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return trips.count
+        return tripsListForTable.count
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -58,7 +47,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            trips.removeAtIndex(indexPath.row)
+            tripsListForTable.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         } 
     }
@@ -68,13 +57,52 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        let itemToMove = trips[sourceIndexPath.row]
-        trips.removeAtIndex(sourceIndexPath.row)
-        trips.insert(itemToMove, atIndex: destinationIndexPath.row)
+        let itemToMove = tripsListForTable[sourceIndexPath.row]
+        tripsListForTable.removeAtIndex(sourceIndexPath.row)
+        tripsListForTable.insert(itemToMove, atIndex: destinationIndexPath.row)
         self.tableView.reloadData()
     }
     
-
+    // MARK: - Helper functions
+    
+    func addEditButton(){
+        let editButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editButtonPressed")
+        editButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = editButton
+    }
+    
+    func editButtonPressed(){
+        tableView.setEditing(true, animated: true)
+        addLeftDoneButton()
+    }
+    
+    func addLeftDoneButton(){
+        let leftDoneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "leftDoneButtonPressed")
+        leftDoneButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = leftDoneButton
+    }
+    
+    func leftDoneButtonPressed(){
+        tableView.setEditing(false, animated: true)
+        addEditButton()
+    }
+    
+    func settingTable () {
+        if tripData.getName() == "" {
+            tripsListForTable.append("Current trip")
+        } else {
+            tripsListForTable.append(tripData.getName())
+        }
+        print(tripsListForTable.description)
+    }
+    
+    func settingUpNavigationBar(){
+        navigationItem.hidesBackButton = true
+        self.title = "Trips"
+        self.navigationController!.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
+        self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+    }
+    
     /*
     // MARK: - Navigation
 

@@ -8,53 +8,38 @@
 
 import UIKit
 
-/* Вопросы к Ивану:
-    1. изменение кнопки Done/Cancel (кнопка двойная на навигатор баре)
-    2. непрозрачная cell  при перемещении
-    3. при обратном сегвее что б выезжала слевой стороны
-    4. отсутствует кнопка назад в навигатор баре, перехожу назад через сегвей
-    5. отцентровать лейбел в навигатор баре
-*/
-
 class AddNewTripViewController: UIViewController, UITextFieldDelegate {
 
     var tripName = String ()
     var startDate = NSDate ()
     var endDate = NSDate ()
-    
+    var trip = MyTrip()
     
     @IBOutlet weak var tripNameTaxtField: UITextField!
     @IBOutlet weak var startDateTextField: UITextField!
     @IBOutlet weak var endDateTextField: UITextField!
-    @IBOutlet weak var cancelDoneButton: UIBarButtonItem!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.hidesBackButton = true
+        setUpNavigationBar()
+        
         startDateTextField.delegate = self
         endDateTextField.delegate = self
+        
+        
     }
     
-    // Кнопка Cancel/Done в зависимости от условий в readyForNextScreen() переходит к следующему экрану или возвращает к предыдущему.
+    func cancelButtonPressed () {
+        navigationController!.popToRootViewControllerAnimated(true)
+    }
     
-    @IBAction func doneButton(sender: UIBarButtonItem) {
-        
-        if readyForNextScreen () {
-            
+    func doneButtonPressed(){
             tripName = tripNameTaxtField.text!
+            trip = MyTrip(name: tripName, firstDay: startDate, lastDay: endDate)
             performSegueWithIdentifier("tripSettings", sender: nil)
-        
-        } else {
-            
-            performSegueWithIdentifier("backToMainScreen", sender: nil)
-        }
-        
     }
-    
     
     // При каждом редактировании поля tripNameTaxtField проверяет readyForNextScreen().
-    
     @IBAction func editingChangedTextField(sender: AnyObject) {
         readyForNextScreen ()
     }
@@ -62,7 +47,6 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     // MARK: - TextField delegate
     
     // Вызывает клавиатуру UIDatePicker в поля для дат.
-    
     func textFieldDidBeginEditing(textField: UITextField) {
         
         let datePicker = UIDatePicker()
@@ -73,7 +57,6 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     }
     
     // Обновляет текстовые поля для дат со значением UIDatePicker.
-    
     func datePickerChanged (sender: UIDatePicker) {
         
         let formatter = NSDateFormatter()
@@ -100,18 +83,35 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - helper methods
     
-    // Проверяет все поля на заполненность. При отсутствии пустых полей, меняет кнопку Cancel на Done и наоборот.
+    func setUpNavigationBar(){
+        navigationItem.hidesBackButton = true
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
+        addCancelButton()
+    }
     
+    func addCancelButton(){
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonPressed")
+        cancelButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = cancelButton
+    }
+    
+    func addDoneButton(){
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed")
+        doneButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = doneButton
+    }
+    
+    // Проверяет все поля на заполненность. При отсутствии пустых полей, меняет кнопку Cancel на Done и наоборот.
     func readyForNextScreen () ->Bool {
         
         if startDateTextField.text != "" && endDateTextField.text != "" && tripNameTaxtField.text != "" {
             
-            cancelDoneButton.title = "Done"
+            addDoneButton()
             return true
         
         } else {
             
-            cancelDoneButton.title = "Cancel"
+            addCancelButton()
             return false
         }
     }
@@ -131,10 +131,8 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let tripS = segue.destinationViewController as? TripSettingsViewController {
-            tripS.titleName = tripName
-            tripS.fromDate = startDate
-            tripS.toDate = endDate
+        if let tripSettignsScreen = segue.destinationViewController as? TripSettingsViewController {
+            tripSettignsScreen.tripInSettings = trip
         }
     }
     
