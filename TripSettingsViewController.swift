@@ -23,6 +23,13 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
         setUpNavigationBar()
         addDateLabelToTitle ()
+        
+        if tripInSettings.isTripBudget {
+        segmentControl.selectedSegmentIndex = 1
+        }
+        
+        hideTableIfTripBudget ()
+        textFieldForBudget.text = tripInSettings.amountInBudgetLabel
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -32,20 +39,22 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
     // MARK: - Action functions
     
     @IBAction func textFieldEditingChanged(sender: UITextField) {
+        
+        if textFieldForBudget.text!.isEmpty{
+            
+            textFieldForBudget.text = "0"
+        }
+        
+        if textFieldForBudget.text!.characters.count > 1 && textFieldForBudget.text![textFieldForBudget.text!.startIndex] == "0" {
+           
+            textFieldForBudget.text!.removeAtIndex(textFieldForBudget.text!.startIndex)
+        }
+        
         readyForNextScreen ()
     }
     
     @IBAction func dailyTripBudgetChooseButton(sender: UISegmentedControl) {
-        if segmentControl.selectedSegmentIndex == 0 {
-            dailyTripBudgetLabel.text = "Daily Budget"
-            TableListOfSpendings.hidden = false
-            addEditButton()
-            
-        } else {
-            dailyTripBudgetLabel.text = "Trip Budget"
-            TableListOfSpendings.hidden = true
-            self.navigationItem.leftBarButtonItem = nil
-        }
+        hideTableIfTripBudget ()
     }
     
     
@@ -87,6 +96,19 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
     }
     
     // MARK: - Helper functions
+    
+    func hideTableIfTripBudget (){
+        if segmentControl.selectedSegmentIndex == 0 {
+            dailyTripBudgetLabel.text = "Daily Budget"
+            TableListOfSpendings.hidden = false
+            addEditButton()
+            
+        } else {
+            dailyTripBudgetLabel.text = "Trip Budget"
+            TableListOfSpendings.hidden = true
+            self.navigationItem.leftBarButtonItem = nil
+        }
+    }
     
     // Функция добавляет второй лейбл в шапку navigation bar  с датами поездки.
     func addDateLabelToTitle () {
@@ -151,19 +173,11 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
     }
     
     func rightDoneButtonPressed(){
+        tripInSettings.amountInBudgetLabel = textFieldForBudget.text!
+        tripInSettings.isTripBudget = segmentControl.selectedSegmentIndex == 1
+        tripInSettings.setBudget(Int(textFieldForBudget.text!)!)
         
-        if segmentControl.selectedSegmentIndex == 0 {
-            
-            tripInSettings.setBudgetDaily(Int(textFieldForBudget.text!)!)
-            
-        } else {
-            
-            tripInSettings.setTripsBudget(Int(textFieldForBudget.text!)!)
-       
-        }
-        
-        let mainVC = navigationController!.viewControllers.first
-        if let mainSCR = mainVC as? MainViewController {
+        if let mainSCR = navigationController!.viewControllers.first as? MainViewController {
             mainSCR.tripData = tripInSettings
         }
         

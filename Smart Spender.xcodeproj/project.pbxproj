@@ -18,6 +18,7 @@
 		1B370B741CCE36B3003F21C6 /* TripSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B370B731CCE36B3003F21C6 /* TripSettingsViewController.swift */; };
 		1B370B761CCE9B73003F21C6 /* MyTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B370B751CCE9B73003F21C6 /* MyTrip.swift */; };
 		1B3727A61CCFFE8800F63BBD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1B3727A41CCFFE8800F63BBD /* Main.storyboard */; };
+		1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,6 +35,7 @@
 		1B370B731CCE36B3003F21C6 /* TripSettingsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TripSettingsViewController.swift; path = ../TripSettingsViewController.swift; sourceTree = "<group>"; };
 		1B370B751CCE9B73003F21C6 /* MyTrip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTrip.swift; sourceTree = "<group>"; };
 		1B3727A51CCFFE8800F63BBD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpendingViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				1B370B751CCE9B73003F21C6 /* MyTrip.swift */,
 				1B0533201CC9EE0600208712 /* TableViewController.swift */,
 				1B3727A41CCFFE8800F63BBD /* Main.storyboard */,
+				1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */,
 				1B0533031CC7FA3100208712 /* Assets.xcassets */,
 				1B0533051CC7FA3100208712 /* LaunchScreen.storyboard */,
 				1B0533081CC7FA3100208712 /* Info.plist */,
@@ -160,6 +163,7 @@
 				1B370B761CCE9B73003F21C6 /* MyTrip.swift in Sources */,
 				1B0532FD1CC7FA3100208712 /* AppDelegate.swift in Sources */,
 				1B370B701CCE09CF003F21C6 /* AddNewTripViewController.swift in Sources */,
+				1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */,
 				1B0533251CCA399F00208712 /* MainViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
