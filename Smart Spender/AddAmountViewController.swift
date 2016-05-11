@@ -8,19 +8,29 @@
 
 import UIKit
 
-class AddAmountViewController: UIViewController {
+protocol VCTwoDelegate {
+    func updateData(data: MyTrip)
+}
+
+class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
+    var delegate: VCTwoDelegate?
+    
+    var tripAddAmount = MyTrip()
+    var number = ""
+    var date = NSDate()
+  
     @IBOutlet weak var scoreboardLabel: UILabel!
+    @IBOutlet weak var textField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        
-        // Do any additional setup after loading the view.
+        addSaveButton ()
+        setUpTextField()
+        self.title = tripAddAmount.getName()
     }
     
-    var number = ""
-    var expenses = [Double]()
+    // MARK: - IBAction methods
     
     @IBAction func numButtons(sender: UIButton) { // Adds numbers from buttons to the label.
         number += "\(sender.currentTitle!)"
@@ -33,13 +43,8 @@ class AddAmountViewController: UIViewController {
         }
     }
     
-    @IBAction func saveButton(sender: UIButton) { // Add amount on the label to expenses.
-        saveScoreboardNumber()
-        // will return to another screen (Like button "back").
-    }
-    
     @IBAction func saveAddAnotherButton(sender: UIButton) {
-        saveScoreboardNumber()
+        saveAmount()
         resetScoreboardLabel()
     }
     
@@ -59,19 +64,46 @@ class AddAmountViewController: UIViewController {
         resetScoreboardLabel()
     }
 
-    func resetScoreboardLabel() {
-        scoreboardLabel.text = "0"
-        number = ""
+    // MARK: - Helper methods
+    
+    func setUpTextField(){
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        textField.text = formatter.stringFromDate(NSDate())
+        
+        textField.delegate = self
     }
     
-    func saveScoreboardNumber() {
-        if Int(number) > 0 {
-            expenses.append(Double(number)!)
+    // Вызывает клавиатуру UIDatePicker в поле для дат.
+    func textFieldDidBeginEditing(textField: UITextField) {
+        
+        let datePicker = UIDatePicker()
+        datePicker.datePickerMode = UIDatePickerMode.Date
+        textField.inputView = datePicker
+        datePicker.addTarget(self, action: "datePickerChanged:", forControlEvents: .ValueChanged)
+    }
+    
+    // Обновляет текстовое поле для дат со значением UIDatePicker.
+    func datePickerChanged (sender: UIDatePicker) {
+        
+        let formatter = NSDateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        
+        if textField.editing == true { // Вписывает значение UIDatePicker в текстовое поле, которое редактируется.
+           
+            textField.text = formatter.stringFromDate(sender.date)
+            date = sender.date
         }
     }
     
-    func changeButton() {
-        
+    func textFieldShouldReturn(textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    func resetScoreboardLabel() {
+        scoreboardLabel.text = "0"
+        number = ""
     }
     
     func addComa (num: String) ->String {
@@ -86,8 +118,32 @@ class AddAmountViewController: UIViewController {
         }
         return newNum
     }
-
-
+    
+    func saveAmount(){
+        if Int(number) > 0 {
+            tripAddAmount.addAmount(Int(number)!, category: "uncategorized", date: date)
+        }
+    }
+    
+    func addSaveButton (){
+        let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "saveButtonPressed")
+        saveButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = saveButton
+    }
+    
+    func saveButtonPressed(){
+        saveAmount()
+        self.delegate?.updateData(tripAddAmount)
+        navigationController!.popViewControllerAnimated(true)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        closeKeyboard ()
+    }
+    
+    func closeKeyboard () {
+        self.view.endEditing(true)
+    }
     
     // MARK: - Navigation
     

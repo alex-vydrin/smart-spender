@@ -11,6 +11,8 @@ import UIKit
 class SpendingViewController: UIViewController {
     
     var currentTrip = MyTrip()
+    var str = String()
+    var currency = "₴"
     
     @IBOutlet weak var dailyBadgetLabel: UILabel!
     @IBOutlet weak var averageLabel: UILabel!
@@ -22,25 +24,30 @@ class SpendingViewController: UIViewController {
     @IBOutlet weak var daysSpent: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
     
+    override func viewWillAppear(animated: Bool) {
+        updateLabels ()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        updateLabels ()
         self.title = currentTrip.getName()
     }
 
+    @IBAction func addAmountButton(sender: UIButton) {
+        performSegueWithIdentifier("addAmountVC", sender: nil)
+    }
     
     
     
     // MARK: - Helper methods
     
     func updateLabels () {
-        dailyBadgetLabel.text = String (currentTrip.dailyBudget)
-        averageLabel.text = String (currentTrip.getAverage())
-        totalForDayLabel.text = String (currentTrip.totalForDay)
-        remainingLabel.text = String (currentTrip.remaining)
-        moneyLeftLabel.text = String (currentTrip.moneyLeft)
-        moneySpentLabel.text = String (currentTrip.moneySpent)
+        dailyBadgetLabel.text = String (currentTrip.dailyBudget) + currency
+        averageLabel.text = String (currentTrip.getAverage()) + currency
+        totalForDayLabel.text = String (currentTrip.totalForDay) + currency
+        remainingLabel.text = String (currentTrip.remaining) + currency
+        moneyLeftLabel.text = String (currentTrip.moneyLeft) + currency
+        moneySpentLabel.text = String (currentTrip.moneySpent) + currency
         daysLeft.text = currentTrip.getDaysLeft()
         daysSpent.text = currentTrip.getDaysSpent()
         
@@ -54,14 +61,24 @@ class SpendingViewController: UIViewController {
     
     
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "addAmountVC" {
+            (segue.destinationViewController as! AddAmountViewController).delegate = self
+        }
+        
+        if let addAmountVC = segue.destinationViewController as? AddAmountViewController {
+            addAmountVC.tripAddAmount = currentTrip
+        }
     }
-    */
+    
+}
 
+extension SpendingViewController: VCTwoDelegate {
+    func updateData(data: MyTrip) {
+        currentTrip = data
+    }
 }
