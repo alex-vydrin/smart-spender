@@ -10,7 +10,7 @@ import UIKit
 
 class SpendingViewController: UIViewController {
     
-    var currentTrip = MyTrip()
+    var index = Int()
     var str = String()
     var currency = "₴"
     
@@ -25,12 +25,13 @@ class SpendingViewController: UIViewController {
     @IBOutlet weak var dateLabel: UILabel!
     
     override func viewWillAppear(animated: Bool) {
+        DataBase.sharedInstance.trips[index].checkCurrentDay()
         updateLabels ()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = currentTrip.getName()
+        self.title = DataBase.sharedInstance.trips[index].getName()
     }
 
     @IBAction func addAmountButton(sender: UIButton) {
@@ -42,14 +43,14 @@ class SpendingViewController: UIViewController {
     // MARK: - Helper methods
     
     func updateLabels () {
-        dailyBadgetLabel.text = String (currentTrip.dailyBudget) + currency
-        averageLabel.text = String (currentTrip.getAverage()) + currency
-        totalForDayLabel.text = String (currentTrip.totalForDay) + currency
-        remainingLabel.text = String (currentTrip.remaining) + currency
-        moneyLeftLabel.text = String (currentTrip.moneyLeft) + currency
-        moneySpentLabel.text = String (currentTrip.moneySpent) + currency
-        daysLeft.text = currentTrip.getDaysLeft()
-        daysSpent.text = currentTrip.getDaysSpent()
+        dailyBadgetLabel.text = String (DataBase.sharedInstance.trips[index].dailyBudget) + currency
+        averageLabel.text = String (DataBase.sharedInstance.trips[index].getAverage()) + currency
+        totalForDayLabel.text = String (DataBase.sharedInstance.trips[index].totalForDay) + currency
+        remainingLabel.text = String (DataBase.sharedInstance.trips[index].remaining) + currency
+        moneyLeftLabel.text = String (DataBase.sharedInstance.trips[index].moneyLeft) + currency
+        moneySpentLabel.text = String (DataBase.sharedInstance.trips[index].moneySpent) + currency
+        daysLeft.text = DataBase.sharedInstance.trips[index].getDaysLeft()
+        daysSpent.text = DataBase.sharedInstance.trips[index].getDaysSpent()
         
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd MMMM yyyy"
@@ -66,19 +67,19 @@ class SpendingViewController: UIViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "addAmountVC" {
-            (segue.destinationViewController as! AddAmountViewController).delegate = self
-        }
+//        if segue.identifier == "addAmountVC" {
+//            (segue.destinationViewController as! AddAmountViewController).delegate = self
+//        }
         
         if let addAmountVC = segue.destinationViewController as? AddAmountViewController {
-            addAmountVC.tripAddAmount = currentTrip
+            addAmountVC.index = index
         }
     }
     
 }
 
-extension SpendingViewController: VCTwoDelegate {
-    func updateData(data: MyTrip) {
-        currentTrip = data
-    }
-}
+//extension SpendingViewController: VCTwoDelegate {
+//    func updateData(data: MyTrip) {
+//        currentTrip = data
+//    }
+//}

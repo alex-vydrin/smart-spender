@@ -34,9 +34,10 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     }
     
     func doneButtonPressed(){
-            tripName = tripNameTaxtField.text!
-            trip = MyTrip(name: tripName, firstDay: startDate, lastDay: endDate)
-            performSegueWithIdentifier("tripSettings", sender: nil)
+        tripName = tripNameTaxtField.text!
+        trip = MyTrip(name: tripName, firstDay: startDate, lastDay: endDate)
+        DataBase.sharedInstance.trips.append(trip)
+        performSegueWithIdentifier("tripSettings", sender: nil)
     }
     
     // При каждом редактировании поля tripNameTaxtField проверяет readyForNextScreen().
@@ -132,7 +133,7 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let tripSettignsScreen = segue.destinationViewController as? TripSettingsViewController {
-            tripSettignsScreen.tripInSettings = trip
+            tripSettignsScreen.index = DataBase.sharedInstance.trips.endIndex.predecessor()
         }
     }
     

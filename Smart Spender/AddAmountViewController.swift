@@ -8,15 +8,15 @@
 
 import UIKit
 
-protocol VCTwoDelegate {
-    func updateData(data: MyTrip)
-}
+//protocol VCTwoDelegate {
+//    func updateData(data: MyTrip)
+//}
 
 class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
-    var delegate: VCTwoDelegate?
+//    var delegate: VCTwoDelegate?
     
-    var tripAddAmount = MyTrip()
+    var index = Int()
     var number = ""
     var date = NSDate()
   
@@ -27,7 +27,7 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         addSaveButton ()
         setUpTextField()
-        self.title = tripAddAmount.getName()
+        self.title = DataBase.sharedInstance.trips[index].getName()
     }
     
     // MARK: - IBAction methods
@@ -121,8 +121,11 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     func saveAmount(){
         if Int(number) > 0 {
-            tripAddAmount.addAmount(Int(number)!, category: "uncategorized", date: date)
+            DataBase.sharedInstance.trips[index].addAmount(Int(number)!, category: "uncategorized", date: date)
         }
+        
+        
+        
     }
     
     func addSaveButton (){
@@ -133,7 +136,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     func saveButtonPressed(){
         saveAmount()
-        self.delegate?.updateData(tripAddAmount)
         navigationController!.popViewControllerAnimated(true)
     }
     

@@ -10,26 +10,30 @@ import UIKit
 
 class TripSettingsViewController: UIViewController, UITableViewDelegate {
     
-    var tripInSettings = MyTrip()
     var spendingsArray = ["Flight:", "Hotel:", "Rent a car:"]
     var firstLabel = UILabel()
+    var index = Int()
     
     @IBOutlet weak var TableListOfSpendings: UITableView!
     @IBOutlet weak var dailyTripBudgetLabel: UILabel!
     @IBOutlet weak var segmentControl: UISegmentedControl!
     @IBOutlet weak var textFieldForBudget: UITextField!
     
+    override func viewWillAppear(animated: Bool) {
+        readyForNextScreen ()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar()
         addDateLabelToTitle ()
         
-        if tripInSettings.isTripBudget {
+        if DataBase.sharedInstance.trips[index].isTripBudget {
         segmentControl.selectedSegmentIndex = 1
         }
-        
         hideTableIfTripBudget ()
-        textFieldForBudget.text = tripInSettings.amountInBudgetLabel
+        
+        textFieldForBudget.text = DataBase.sharedInstance.trips[index].amountInBudgetLabel
     }
     
     override func viewWillDisappear(animated: Bool) {
@@ -119,7 +123,7 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
             
             let firstFrame = CGRect(x: navigationBar.frame.width/2 - 53, y: 16, width: navigationBar.frame.width/2, height: navigationBar.frame.height)
             firstLabel = UILabel(frame: firstFrame)
-            firstLabel.text = "\(formatter.stringFromDate(tripInSettings.startDate)) - \(formatter.stringFromDate(tripInSettings.endDate))"
+            firstLabel.text = "\(formatter.stringFromDate(DataBase.sharedInstance.trips[index].startDate)) - \(formatter.stringFromDate(DataBase.sharedInstance.trips[index].endDate))"
             firstLabel.font = UIFont.init(name: "HelveticaNeue", size: 10.0)
             firstLabel.textColor = UIColor.whiteColor()
             navigationBar.addSubview(firstLabel)
@@ -129,7 +133,7 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
     func setUpNavigationBar(){
         navigationItem.hidesBackButton = true
         self.TableListOfSpendings.tableFooterView = UIView(frame: CGRectZero)
-        self.title = tripInSettings.getName()
+        self.title = DataBase.sharedInstance.trips[index].getName()
         addCancelButton()
         addEditButton()
     }
@@ -173,20 +177,16 @@ class TripSettingsViewController: UIViewController, UITableViewDelegate {
     }
     
     func rightDoneButtonPressed(){
-        tripInSettings.amountInBudgetLabel = textFieldForBudget.text!
-        tripInSettings.isTripBudget = segmentControl.selectedSegmentIndex == 1
-        tripInSettings.setBudget(Int(textFieldForBudget.text!)!)
-        
-        if let mainSCR = navigationController!.viewControllers.first as? MainViewController {
-            mainSCR.tripData = tripInSettings
-        }
+        DataBase.sharedInstance.trips[index].amountInBudgetLabel = textFieldForBudget.text!
+        DataBase.sharedInstance.trips[index].isTripBudget = segmentControl.selectedSegmentIndex == 1
+        DataBase.sharedInstance.trips[index].setBudget(Int(textFieldForBudget.text!)!)
         
         navigationController!.popToRootViewControllerAnimated(true)
     }
     
     func readyForNextScreen ()->Bool {
         
-        if textFieldForBudget.text != "" {
+        if textFieldForBudget.text != "0" {
             
             addRightDoneButton()
             return true

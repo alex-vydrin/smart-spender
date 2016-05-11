@@ -10,49 +10,33 @@ import UIKit
 
 class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var tripForSpendingVC = MyTrip()
+    var index = Int()
     var tripData = MyTrip()
-    var tripsListForTable = [MyTrip]()
-    var saveDictionary = [[String:NSObject]]()
     
     @IBOutlet weak var tableView: UITableView!
     
     override func viewWillAppear(animated: Bool) {
-        
-        settingTable ()
         tableView.reloadData()
-        
-        saveToFile ()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let arr = NSMutableArray(contentsOfFile: appDocsDir()+"/trips.plist")!
-        tripsListForTable = convertToMyTrip(arr)
-
-        
-        
+        loadFromFile ()
         settingUpNavigationBar()
-        if tripsListForTable.isEmpty {
-        tripsListForTable.append(tripData)
-        }
+        settingTable ()
         self.tableView.tableFooterView = UIView(frame: CGRectZero)
     }
     
     
-    
-    @IBAction func newTripButton(sender: UIButton) {
-    }
-    
     // MARK: - tableView functions
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-        cell.textLabel?.text = tripsListForTable[indexPath.row].getName()
+        cell.textLabel?.text = DataBase.sharedInstance.trips[indexPath.row].getName()
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return tripsListForTable.count
+        return DataBase.sharedInstance.trips.count
     }
     
     func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -61,7 +45,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            tripsListForTable.removeAtIndex(indexPath.row)
+            DataBase.sharedInstance.trips.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
         }
     }
@@ -71,15 +55,20 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        let itemToMove = tripsListForTable[sourceIndexPath.row]
-        tripsListForTable.removeAtIndex(sourceIndexPath.row)
-        tripsListForTable.insert(itemToMove, atIndex: destinationIndexPath.row)
+        let itemToMove = DataBase.sharedInstance.trips[sourceIndexPath.row]
+        DataBase.sharedInstance.trips.removeAtIndex(sourceIndexPath.row)
+        DataBase.sharedInstance.trips.insert(itemToMove, atIndex: destinationIndexPath.row)
         self.tableView.reloadData()
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        tripForSpendingVC = tripsListForTable[indexPath.row]
+        index = indexPath.row
         performSegueWithIdentifier("spendingVC", sender: nil)
+    }
+    
+    func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
+        index = indexPath.row
+        performSegueWithIdentifier("tripSettingsVC", sender: nil)
     }
     
     // MARK: - Helper functions
@@ -108,11 +97,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func settingTable () {
         
-        if tripData.getName() != "Current trip" {
+        if DataBase.sharedInstance.trips.isEmpty {
             
-            
-            tripsListForTable.append(tripData)
-            tripData = MyTrip()
+            DataBase.sharedInstance.trips.append(tripData)
         }
     }
     
@@ -122,18 +109,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationController!.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
         self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         addEditButton()
-    }
-    
-    func convertToDictionary (mytrip: [MyTrip])-> [[String:NSObject]]{
-        
-        var arrayOfDicts = [[String:NSObject]]()
-        
-        for trip in mytrip {
-            
-            arrayOfDicts.append(trip.toDictionary())
-        }
-        
-        return arrayOfDicts
     }
     
     func convertToMyTrip (array: NSMutableArray) ->[MyTrip] {
@@ -150,10 +125,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         return tripsArray
     }
     
-    func saveToFile () {
-        saveDictionary = convertToDictionary (tripsListForTable)
-        let tripsInDictionaries = NSMutableArray (array: saveDictionary)
-        tripsInDictionaries.writeToFile(appDocsDir()+"/trips.plist", atomically: true)
+    func loadFromFile () {
+        if let arr = NSMutableArray(contentsOfFile: appDocsDir()+"/trips.plist") {
+            DataBase.sharedInstance.trips = convertToMyTrip(arr)
+        }
+        
     }
     
     func appDocsDir() -> String {
@@ -168,7 +144,11 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let spendingVC = segue.destinationViewController as? SpendingViewController {
-            spendingVC.currentTrip = tripForSpendingVC
+            spendingVC.index = index
+        }
+        
+        if let tripSettingsVC = segue.destinationViewController as? TripSettingsViewController {
+            tripSettingsVC.index = index
         }
     }
     
