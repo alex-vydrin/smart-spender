@@ -25,19 +25,6 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
         
         startDateTextField.delegate = self
         endDateTextField.delegate = self
-        
-        
-    }
-    
-    func cancelButtonPressed () {
-        navigationController!.popToRootViewControllerAnimated(true)
-    }
-    
-    func doneButtonPressed(){
-        tripName = tripNameTaxtField.text!
-        trip = MyTrip(name: tripName, firstDay: startDate, lastDay: endDate)
-        DataBase.sharedInstance.trips.append(trip)
-        performSegueWithIdentifier("tripSettings", sender: nil)
     }
     
     // При каждом редактировании поля tripNameTaxtField проверяет readyForNextScreen().
@@ -96,10 +83,21 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
         self.navigationItem.rightBarButtonItem = cancelButton
     }
     
+    func cancelButtonPressed () {
+        navigationController!.popToRootViewControllerAnimated(true)
+    }
+    
     func addDoneButton(){
         let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed")
         doneButton.tintColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = doneButton
+    }
+    
+    func doneButtonPressed(){
+        tripName = tripNameTaxtField.text!
+        trip = MyTrip(name: tripName, firstDay: startDate, lastDay: endDate)
+        DataBase.sharedInstance.trips.append(trip)
+        performSegueWithIdentifier("tripSettings", sender: nil)
     }
     
     // Проверяет все поля на заполненность. При отсутствии пустых полей, меняет кнопку Cancel на Done и наоборот.

@@ -17,6 +17,7 @@
 		1B3727A61CCFFE8800F63BBD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1B3727A41CCFFE8800F63BBD /* Main.storyboard */; };
 		1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */; };
 		1BE77DA51CE3501800B3ADD7 /* DataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE77DA41CE3501800B3ADD7 /* DataBase.swift */; };
+		1BE77DA71CE4821B00B3ADD7 /* HistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		1B3727A51CCFFE8800F63BBD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpendingViewController.swift; sourceTree = "<group>"; };
 		1BE77DA41CE3501800B3ADD7 /* DataBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBase.swift; sourceTree = "<group>"; };
+		1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,6 +50,7 @@
 		09A065051CD9F52300D79EC2 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */,
 				1B370B731CCE36B3003F21C6 /* TripSettingsViewController.swift */,
 				1B370B6F1CCE09CF003F21C6 /* AddNewTripViewController.swift */,
 				1B0533241CCA399F00208712 /* MainViewController.swift */,
@@ -163,6 +166,7 @@
 				1B370B761CCE9B73003F21C6 /* MyTrip.swift in Sources */,
 				1B0532FD1CC7FA3100208712 /* AppDelegate.swift in Sources */,
 				1B370B701CCE09CF003F21C6 /* AddNewTripViewController.swift in Sources */,
+				1BE77DA71CE4821B00B3ADD7 /* HistoryTableViewController.swift in Sources */,
 				1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */,
 				1BE77DA51CE3501800B3ADD7 /* DataBase.swift in Sources */,
 				1B0533251CCA399F00208712 /* MainViewController.swift in Sources */,

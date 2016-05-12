@@ -25,7 +25,9 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.hidesBackButton = true
         addSaveButton ()
+        addCancelButton ()
         setUpTextField()
         self.title = DataBase.sharedInstance.trips[index].getName()
     }
@@ -70,7 +72,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd.MM.yyyy"
         textField.text = formatter.stringFromDate(NSDate())
-        
         textField.delegate = self
     }
     
@@ -123,9 +124,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         if Int(number) > 0 {
             DataBase.sharedInstance.trips[index].addAmount(Int(number)!, category: "uncategorized", date: date)
         }
-        
-        
-        
     }
     
     func addSaveButton (){
@@ -136,6 +134,16 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     func saveButtonPressed(){
         saveAmount()
+        navigationController!.popViewControllerAnimated(true)
+    }
+    
+    func addCancelButton (){
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonPressed")
+        cancelButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.leftBarButtonItem = cancelButton
+    }
+    
+    func cancelButtonPressed(){
         navigationController!.popViewControllerAnimated(true)
     }
     

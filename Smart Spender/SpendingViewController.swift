@@ -31,6 +31,8 @@ class SpendingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        navigationItem.hidesBackButton = true
+        addDoneButton()
         self.title = DataBase.sharedInstance.trips[index].getName()
     }
 
@@ -43,33 +45,51 @@ class SpendingViewController: UIViewController {
     // MARK: - Helper methods
     
     func updateLabels () {
-        dailyBadgetLabel.text = String (DataBase.sharedInstance.trips[index].dailyBudget) + currency
-        averageLabel.text = String (DataBase.sharedInstance.trips[index].getAverage()) + currency
-        totalForDayLabel.text = String (DataBase.sharedInstance.trips[index].totalForDay) + currency
-        remainingLabel.text = String (DataBase.sharedInstance.trips[index].remaining) + currency
-        moneyLeftLabel.text = String (DataBase.sharedInstance.trips[index].moneyLeft) + currency
-        moneySpentLabel.text = String (DataBase.sharedInstance.trips[index].moneySpent) + currency
+        dailyBadgetLabel.text = addSpace (String (DataBase.sharedInstance.trips[index].dailyBudget)) + currency
+        averageLabel.text = addSpace ( String (DataBase.sharedInstance.trips[index].getAverage())) + currency
+        totalForDayLabel.text = addSpace ( String (DataBase.sharedInstance.trips[index].totalForDay)) + currency
+        remainingLabel.text = addSpace ( String (DataBase.sharedInstance.trips[index].remaining)) + currency
+        moneyLeftLabel.text = addSpace ( String (DataBase.sharedInstance.trips[index].moneyLeft)) + currency
+        moneySpentLabel.text = addSpace ( String (DataBase.sharedInstance.trips[index].moneySpent)) + currency
         daysLeft.text = DataBase.sharedInstance.trips[index].getDaysLeft()
-        daysSpent.text = DataBase.sharedInstance.trips[index].getDaysSpent()
+        daysSpent.text = String (DataBase.sharedInstance.trips[index].getDaysSpent())
         
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd MMMM yyyy"
         dateLabel.text = formatter.stringFromDate(NSDate())
     }
     
+    func addDoneButton(){
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed")
+        doneButton.tintColor = UIColor.whiteColor()
+        self.navigationItem.rightBarButtonItem = doneButton
+    }
     
+    func doneButtonPressed () {
+        navigationController!.popToRootViewControllerAnimated(true)
+    }
     
-    
-    
-
+    func addSpace (num: String) ->String {
+        var newNum = ""
+        
+        for i in 1...num.characters.count {
+            newNum = "\(num[num.endIndex.advancedBy(-i)])" + newNum
+            
+            if i%3 == 0 && num.characters.count > i {
+                newNum = " " + newNum
+            }
+        }
+        return newNum
+    }
     
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        if segue.identifier == "addAmountVC" {
-//            (segue.destinationViewController as! AddAmountViewController).delegate = self
-//        }
+        
+        if let historyVC = segue.destinationViewController as? HistoryTableViewController {
+            historyVC.index = index
+        }
         
         if let addAmountVC = segue.destinationViewController as? AddAmountViewController {
             addAmountVC.index = index
@@ -78,8 +98,3 @@ class SpendingViewController: UIViewController {
     
 }
 
-//extension SpendingViewController: VCTwoDelegate {
-//    func updateData(data: MyTrip) {
-//        currentTrip = data
-//    }
-//}

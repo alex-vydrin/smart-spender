@@ -22,7 +22,6 @@ class MyTrip: NSObject {
     var moneyLeft = 0
     var moneySpent = 0
     var daysInTrip = 0
-    var daysSpent = 0
     var amountInBudgetLabel = "0"
     
     var startDate: NSDate
@@ -52,7 +51,7 @@ class MyTrip: NSObject {
                                             "date":date]
         spendingsArray.append(amountDict)
         finalBudget += amount
-        moneySpent += amount
+        moneySpent = countMoneySpent ()
         totalForDay += amount
         updateMoneyLeft ()
         updateRamaining ()
@@ -64,39 +63,40 @@ class MyTrip: NSObject {
     }
     
     func getAverage ()->Int {
-        daysSpent = daysFrom(startDate, to: currentTime)
         
-        if daysSpent <= 0 {
+        if getDaysSpent() == 0 {
+            
             return 0
         
         } else {
             
-            return moneySpent/daysSpent
+            return moneySpent/getDaysSpent()
         }
     }
     
     // Показывает сколько дней в поездке осталось.
     func getDaysLeft ()->String {
+        let daysLeft = daysFrom(currentTime, to: endDate)
         
-        if daysFrom(currentTime, to: endDate) > daysFrom(startDate, to: endDate) {
+        if daysLeft > daysInTrip {
             
-            return String (daysFrom(startDate, to: endDate))
-        
+            return String(daysInTrip)
+       
         } else {
             
-            return String (daysFrom(currentTime, to: endDate))
+            return String (daysLeft)
         }
     }
     
-    func getDaysSpent ()->String {
+    func getDaysSpent ()->Int {
         
-        if daysFrom(currentTime, to: endDate) > daysFrom(startDate, to: endDate) {
+        if daysFrom(calendarDay(startDate), to:calendarDay(NSDate()))  < 0 {
             
-            return "0"
+            return 0
         
         } else {
             
-            return String (daysFrom(startDate, to: currentTime))
+            return daysFrom(calendarDay(startDate), to:calendarDay(NSDate()))
         }
     }
     
@@ -117,7 +117,11 @@ class MyTrip: NSObject {
     }
     
     func setBudget (budget: Int) {
-        daysInTrip = daysFrom(startDate, to: endDate)
+        daysInTrip = daysFrom(calendarDay(startDate), to: calendarDay(endDate))
+        
+        if calendarDay(startDate) == calendarDay(endDate) {
+            daysInTrip = 1
+        }
         
         if isTripBudget {
             
@@ -150,12 +154,10 @@ class MyTrip: NSObject {
         }
     }
     
-    func daysFrom (from: NSDate, to: NSDate)->Int {
-        let days = Int (to.timeIntervalSinceDate(from)) / 86400
-        if days == 0 {
-            return 1
-        }
-        return Int (to.timeIntervalSinceDate(from)) / 86400
+    func daysFrom (start: NSDate, to: NSDate)->Int {
+        let differenceInDays = NSCalendar.currentCalendar().components([NSCalendarUnit.Day], fromDate: start, toDate: to, options: NSCalendarOptions.init(rawValue: 0))
+        
+        return differenceInDays.day
     }
     
     func toDictionary ()-> [String:NSObject]{
@@ -171,7 +173,6 @@ class MyTrip: NSObject {
         myDict["remaining"] = remaining
         myDict["moneyLeft"] = moneyLeft
         myDict["moneySpent"] = moneySpent
-        myDict["daysSpent"] = daysSpent
         myDict["amountInBudgetLabel"] = amountInBudgetLabel
         myDict["startDate"] = startDate
         myDict["endDate"] = endDate
@@ -198,7 +199,6 @@ class MyTrip: NSObject {
         self.remaining = dict["remaining"] as! Int
         self.moneyLeft = dict["moneyLeft"] as! Int
         self.moneySpent = dict["moneySpent"] as! Int
-        self.daysSpent = dict["daysSpent"] as! Int
         self.daysInTrip = dict["daysInTrip"] as! Int
         self.amountInBudgetLabel = dict["amountInBudgetLabel"] as! String
         self.startDate = dict["startDate"] as! NSDate
@@ -212,12 +212,30 @@ class MyTrip: NSObject {
         let currentDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: NSDate())
         let lastSpendingDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: spendingDay)
         
-        if currentDay.day != lastSpendingDay.day && currentDay.month != lastSpendingDay.month {
+        if currentDay.day != lastSpendingDay.day || currentDay.month != lastSpendingDay.month {
             
             remaining = dailyBudget
             totalForDay = 0
             spendingDay = NSDate()
         }
+    }
+    
+    func countMoneySpent () ->Int {
+        var totalSpent = 0
+        
+        for dict in spendingsArray {
+            totalSpent += dict["amount"] as! Int
+        }
+        return totalSpent
+    }
+    
+    // Округляет дату до календарного дня, откидывая часы.
+    func calendarDay (date: NSDate) ->NSDate {
+        let dateFormatter = NSDateFormatter()
+        dateFormatter.dateFormat = "dd-MM-yyyy"
+        let strDate = dateFormatter.stringFromDate(date)
+        let roundedDate = dateFormatter.dateFromString(strDate)!
+        return roundedDate
     }
 
 
