@@ -10,9 +10,12 @@ import UIKit
 
 class SummaryViewController: UIViewController {
 
-    var index = 0
-    var currentTrip: MyTrip {
-        return DataBase.sharedInstance.trips[index]
+    var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
+    
+    var name = ""
+    
+    var currentTrip: Trip {
+        return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
     }
     
     @IBOutlet weak var tripNameLabel: UILabel!
@@ -31,16 +34,15 @@ class SummaryViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "Summary"
-        
     }
     
     @IBAction func addAmountButton() {
-    performSegueWithIdentifier("summaryToAddAmount", sender: nil)
+        performSegueWithIdentifier("summaryToAddAmount", sender: nil)
     }
     
     func setUpLabels () {
                 
-        tripNameLabel.text = currentTrip.getName()
+        tripNameLabel.text = name
         dateLabel.text = currentTrip.stringFrom(.tripDates)
         totalForTripLabel.text = currentTrip.stringFrom(.moneySpent)
         dailyBudgetLabel.text = currentTrip.stringFrom(.dailyBudget)
@@ -52,11 +54,11 @@ class SummaryViewController: UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         if let addAmountVC = segue.destinationViewController as? AddAmountViewController {
-            addAmountVC.index = index
+            addAmountVC.name = name
         }
 
         if let historyVC = segue.destinationViewController as? HistoryTableViewController {
-            historyVC.index = index
+            historyVC.name = name
         }
     }
 }

@@ -18,6 +18,7 @@ class Trip: NSManagedObject {
                 trip.startDate = startDate
                 trip.endDate = endDate
                 trip.currency = " ₴"
+                trip.spendingDay = NSDate()
             }
     }
     
@@ -46,8 +47,6 @@ class Trip: NSManagedObject {
         }
         return false
     }
-    
-    
     
     var tripIsOver: Bool {
         return daysFrom(NSDate(), to: endDate) < 0
@@ -98,7 +97,7 @@ class Trip: NSManagedObject {
             return moneyLeft
     }
     
-    var moneySpent:Int {
+    var moneySpent: Int {
         var totalSpent = 0
         
         self.managedObjectContext?.performBlockAndWait{
@@ -112,6 +111,20 @@ class Trip: NSManagedObject {
             }
         }
         return totalSpent
+    }
+    
+    var spendingsArray: [Spendings]? {
+        var spendings: [Spendings]?
+        
+        self.managedObjectContext?.performBlockAndWait{
+            let request = NSFetchRequest(entityName: "Spendings")
+            request.predicate = NSPredicate(format: "trip.name = %@", self.name)
+            
+            if let spendingsArr = (try? self.managedObjectContext!.executeFetchRequest(request)) as? [Spendings] {
+                spendings = spendingsArr
+            }
+        }
+        return spendings
     }
     
     private func daysFrom (start: NSDate, to lastDate: NSDate)->Int {
@@ -137,6 +150,30 @@ class Trip: NSManagedObject {
             
             dailyBudget = budget
             tripBudget = Int(dailyBudget!) * daysInTrip
+        }
+    }
+    
+    func addAmount(amount: Int, category: String, date: NSDate) {
+        totalForDay = Int (totalForDay!) + amount
+        spendingDay = date
+
+        Spendings.createSpending(amount,
+                                 category: category,
+                                 date: date,
+                                 trip: self,
+                                 inManagedObjectContext: self.managedObjectContext!
+        )
+    }
+    
+    func checkCurrentDay () {
+        let calendar = NSCalendar.currentCalendar()
+        let currentDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: NSDate())
+        let lastSpendingDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: spendingDay!)
+        
+        if currentDay.day != lastSpendingDay.day || currentDay.month != lastSpendingDay.month {
+            
+            totalForDay = 0
+            spendingDay = NSDate()
         }
     }
     

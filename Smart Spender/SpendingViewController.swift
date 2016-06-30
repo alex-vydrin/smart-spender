@@ -9,18 +9,12 @@
 import UIKit
 class SpendingViewController: UIViewController {
     
-//    var trip: Trip {
-//        get {
-//            return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
-//        }
-//        set {
-//            Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)! = newValue
-//        }
-//    }
+    var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
     
-    var index = Int()
-    private var currentTrip: MyTrip {
-        return DataBase.sharedInstance.trips[index]
+    var name = ""
+    
+    var currentTrip: Trip {
+        return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
     }
     
     @IBOutlet weak var dailyBadgetLabel: UILabel!
@@ -34,13 +28,13 @@ class SpendingViewController: UIViewController {
     @IBOutlet weak var dateLabel: UILabel!
     
     override func viewWillAppear(animated: Bool) {
-        currentTrip.checkCurrentDay()
+//        currentTrip.checkCurrentDay()
         updateLabels ()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.title = currentTrip.getName()
+        self.title = name
     }
 
     @IBAction func addAmountButton(sender: UIButton) {
@@ -69,11 +63,11 @@ class SpendingViewController: UIViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if let historyVC = segue.destinationViewController as? HistoryTableViewController {
-            historyVC.index = index
+            historyVC.name = name
         }
         
         if let addAmountVC = segue.destinationViewController as? AddAmountViewController {
-            addAmountVC.index = index
+            addAmountVC.name = name
         }
     }
     

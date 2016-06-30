@@ -14,13 +14,17 @@ import UIKit
 
 class AddAmountViewController: UIViewController, UITextFieldDelegate {
 
+    var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
     
-    var index = Int()
+    var name = ""
+    
+    var currentTrip: Trip {
+        return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
+    }
+    
     private var number = ""
     private var date = NSDate()
-    private var currentTrip: MyTrip {
-        return DataBase.sharedInstance.trips[index]
-    }
+    
     
     
     @IBOutlet var numButtons: [UIButton]!
@@ -35,7 +39,9 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         addSaveButton ()
         addCancelButton ()
         setUpTextField()
-        self.title = currentTrip.getName()
+        self.title = name
+        
+        print ("money spend \(currentTrip.moneySpent)")
     }
     
     // MARK: - IBAction methods
@@ -135,6 +141,7 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     private func saveAmount(){
         if Int(number) > 0 {
             currentTrip.addAmount(Int(number)!, category: "uncategorized", date: date)
+            saveDataBase()
         }
     }
     
@@ -147,6 +154,14 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     func saveButtonPressed(){
         saveAmount()
         navigationController!.popViewControllerAnimated(true)
+    }
+    
+    func saveDataBase() {
+        do {
+            try managedObjectContext!.save()
+        } catch let error {
+            print ("Core Data Error: \(error)")
+        }
     }
     
     private func addCancelButton (){

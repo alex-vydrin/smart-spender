@@ -7,13 +7,16 @@
 //
 
 import UIKit
+import CoreData
 
 class HistoryTableViewController: UITableViewController {
 
-    var index = 0
-    var currency = " ₴"
-    var currentTrip: MyTrip {
-        return DataBase.sharedInstance.trips[index]
+    var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
+    
+    var name = ""
+    
+    var currentTrip: Trip {
+        return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
     }
     
     
@@ -39,7 +42,7 @@ class HistoryTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentTrip.spendingsArray.count == 0 ? 1 : currentTrip.spendingsArray.count
+        return countSpendings() == nil ? 1 : countSpendings()!
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
@@ -49,8 +52,8 @@ class HistoryTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
         
         if currentTrip.moneySpent != 0 {
-            cell.textLabel?.text = addSpace(String (currentTrip.spendingsArray[indexPath.row]["amount"]!))
-            cell.detailTextLabel?.text = formatter.stringFromDate(currentTrip.spendingsArray[indexPath.row]["date"]! as! NSDate)
+            cell.textLabel?.text = addSpace(String (currentTrip.spendingsArray![indexPath.row].amount!))
+            cell.detailTextLabel?.text = formatter.stringFromDate (currentTrip.spendingsArray![indexPath.row].date!)
         } else {
             cell.textLabel?.text = "No spendings yet..."
             cell.detailTextLabel?.text = ""
@@ -60,7 +63,7 @@ class HistoryTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return currentTrip.getName()
+        return name
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
@@ -77,7 +80,17 @@ class HistoryTableViewController: UITableViewController {
                 newNum = " " + newNum
             }
         }
-        return newNum + currency
+        return newNum + currentTrip.currency!
+    }
+    
+    private func countSpendings () -> Int? {
+        var count: Int?
+        managedObjectContext?.performBlockAndWait {
+            let request = NSFetchRequest(entityName: "Spendings")
+            request.predicate = NSPredicate(format: "trip.name = %@", self.name)
+            count = self.managedObjectContext!.countForFetchRequest(request, error: nil)
+        }
+        return count
     }
     
     /*

@@ -128,7 +128,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
 //    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        
+        self.indexPathForTrip = indexPath
         if (fetchedResultsController?.objectAtIndexPath(indexPath) as! Trip).tripIsOver {
             performSegueWithIdentifier("summaryVC", sender: nil)
         } else {
@@ -224,8 +224,9 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
             case Constants.SegueToSpendingsVC:
                 if let spendingVC = segue.destinationViewController as? SpendingViewController {
-//                    spendingVC.index = index
-                }
+                    if let trip = fetchedResultsController?.objectAtIndexPath(indexPathForTrip) as? Trip {
+                        spendingVC.name = trip.name
+                    }                }
                 
             case Constants.SegueToTripSettingsVC:
                     if let tripSettingsVC = segue.destinationViewController as? TripSettingsTableViewController {
@@ -236,11 +237,15 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
                 
             case Constants.SegueToSummuryVC:
                 if let summaryVC = segue.destinationViewController as? SummaryViewController {
-//                    summaryVC.index = index
+                    if let trip = fetchedResultsController?.objectAtIndexPath(indexPathForTrip) as? Trip {
+                        summaryVC.name = trip.name
+                    }
+                    
                 }
             default: break
             }
         }
+        
     }
     
     

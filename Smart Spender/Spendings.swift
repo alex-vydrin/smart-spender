@@ -12,11 +12,12 @@ import CoreData
 
 class Spendings: NSManagedObject {
 
-    class func createSpending (amount: Int, category: String, date: NSDate, inManagedObjectContext context: NSManagedObjectContext) {
+    class func createSpending (amount: Int, category: String, date: NSDate, trip: Trip, inManagedObjectContext context: NSManagedObjectContext) {
         if let spending = NSEntityDescription.insertNewObjectForEntityForName("Spendings", inManagedObjectContext: context) as? Spendings {
             spending.amount = amount
             spending.category = category
             spending.date = date
+            spending.trip = trip
         }
     }
 }
