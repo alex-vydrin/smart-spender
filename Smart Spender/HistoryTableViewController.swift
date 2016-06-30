@@ -11,23 +11,27 @@ import UIKit
 class HistoryTableViewController: UITableViewController {
 
     var index = 0
-    var currency = "₴"
+    var currency = " ₴"
+    var currentTrip: MyTrip {
+        return DataBase.sharedInstance.trips[index]
+    }
+    
     
     @IBOutlet weak var totalLabel: UILabel!
     
     override func viewWillAppear(animated: Bool) {
-        totalLabel.text = "  Total: \(addSpace(String (DataBase.sharedInstance.trips[index].moneySpent)))" + currency
+        totalLabel.text = "  Total: \(addSpace(String (currentTrip.moneySpent)))"
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "History"
-        navigationItem.hidesBackButton = true
-        addDoneButton()
-        //self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
-
+    struct Constants {
+        static let RowHeightScale: CGFloat = 0.08
+    }
+    
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
@@ -35,32 +39,32 @@ class HistoryTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        
-        return DataBase.sharedInstance.trips[index].spendingsArray.count
+        return currentTrip.spendingsArray.count == 0 ? 1 : currentTrip.spendingsArray.count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd MMMM yyyy"
+        
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-        cell.textLabel?.text = addSpace(String (DataBase.sharedInstance.trips[index].spendingsArray[indexPath.row]["amount"]!)) + currency
-        cell.detailTextLabel?.text = formatter.stringFromDate(DataBase.sharedInstance.trips[index].spendingsArray[indexPath.row]["date"]! as! NSDate)
-
+        
+        if currentTrip.moneySpent != 0 {
+            cell.textLabel?.text = addSpace(String (currentTrip.spendingsArray[indexPath.row]["amount"]!))
+            cell.detailTextLabel?.text = formatter.stringFromDate(currentTrip.spendingsArray[indexPath.row]["date"]! as! NSDate)
+        } else {
+            cell.textLabel?.text = "No spendings yet..."
+            cell.detailTextLabel?.text = ""
+        }
+        
         return cell
     }
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return DataBase.sharedInstance.trips[index].getName()
+        return currentTrip.getName()
     }
     
-    func addDoneButton(){
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed")
-        doneButton.tintColor = UIColor.whiteColor()
-        self.navigationItem.rightBarButtonItem = doneButton
-    }
-    
-    func doneButtonPressed () {
-        navigationController!.popViewControllerAnimated(true)
+    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return CGRectGetHeight(UIScreen.mainScreen().bounds) * Constants.RowHeightScale;
     }
     
     func addSpace (num: String) ->String {
@@ -73,7 +77,7 @@ class HistoryTableViewController: UITableViewController {
                 newNum = " " + newNum
             }
         }
-        return newNum
+        return newNum + currency
     }
     
     /*

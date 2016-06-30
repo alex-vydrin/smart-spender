@@ -13,23 +13,29 @@ import UIKit
 //}
 
 class AddAmountViewController: UIViewController, UITextFieldDelegate {
-    
-//    var delegate: VCTwoDelegate?
+
     
     var index = Int()
-    var number = ""
-    var date = NSDate()
-  
+    private var number = ""
+    private var date = NSDate()
+    private var currentTrip: MyTrip {
+        return DataBase.sharedInstance.trips[index]
+    }
+    
+    
+    @IBOutlet var numButtons: [UIButton]!
     @IBOutlet weak var scoreboardLabel: UILabel!
     @IBOutlet weak var textField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.hidesBackButton = true
+        
+        setUpButtons(numButtons)
         addSaveButton ()
         addCancelButton ()
         setUpTextField()
-        self.title = DataBase.sharedInstance.trips[index].getName()
+        self.title = currentTrip.getName()
     }
     
     // MARK: - IBAction methods
@@ -65,10 +71,17 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     @IBAction func clearButton(sender: AnyObject) { // Reset scoreboard.
         resetScoreboardLabel()
     }
-
+    
     // MARK: - Helper methods
     
-    func setUpTextField(){
+    private func setUpButtons (buttons: [UIButton]) {
+        for button in buttons {
+            button.layer.borderWidth = 0.5
+            button.layer.borderColor = UIColor.lightGrayColor().CGColor
+        }
+    }
+    
+    private func setUpTextField(){
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd.MM.yyyy"
         textField.text = formatter.stringFromDate(NSDate())
@@ -77,11 +90,10 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     // Вызывает клавиатуру UIDatePicker в поле для дат.
     func textFieldDidBeginEditing(textField: UITextField) {
-        
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = UIDatePickerMode.Date
         textField.inputView = datePicker
-        datePicker.addTarget(self, action: "datePickerChanged:", forControlEvents: .ValueChanged)
+        datePicker.addTarget(self, action: #selector(AddAmountViewController.datePickerChanged(_:)), forControlEvents: .ValueChanged)
     }
     
     // Обновляет текстовое поле для дат со значением UIDatePicker.
@@ -91,7 +103,7 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         formatter.dateFormat = "dd.MM.yyyy"
         
         if textField.editing == true { // Вписывает значение UIDatePicker в текстовое поле, которое редактируется.
-           
+            
             textField.text = formatter.stringFromDate(sender.date)
             date = sender.date
         }
@@ -102,7 +114,7 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    func resetScoreboardLabel() {
+    private func resetScoreboardLabel() {
         scoreboardLabel.text = "0"
         number = ""
     }
@@ -120,14 +132,14 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         return newNum
     }
     
-    func saveAmount(){
+    private func saveAmount(){
         if Int(number) > 0 {
-            DataBase.sharedInstance.trips[index].addAmount(Int(number)!, category: "uncategorized", date: date)
+            currentTrip.addAmount(Int(number)!, category: "uncategorized", date: date)
         }
     }
     
-    func addSaveButton (){
-        let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: "saveButtonPressed")
+    private func addSaveButton (){
+        let saveButton = UIBarButtonItem(barButtonSystemItem: .Save, target: self, action: #selector(AddAmountViewController.saveButtonPressed))
         saveButton.tintColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = saveButton
     }
@@ -137,8 +149,8 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         navigationController!.popViewControllerAnimated(true)
     }
     
-    func addCancelButton (){
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonPressed")
+    private func addCancelButton (){
+        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: #selector(AddAmountViewController.cancelButtonPressed))
         cancelButton.tintColor = UIColor.whiteColor()
         self.navigationItem.leftBarButtonItem = cancelButton
     }
@@ -151,18 +163,8 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         closeKeyboard ()
     }
     
-    func closeKeyboard () {
+    private func closeKeyboard () {
         self.view.endEditing(true)
     }
     
-    // MARK: - Navigation
-    
-    /*
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

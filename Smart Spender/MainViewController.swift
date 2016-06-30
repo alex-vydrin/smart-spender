@@ -7,74 +7,180 @@
 //
 
 import UIKit
+import CoreData
 
-class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MainViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, NSFetchedResultsControllerDelegate {
     
-    var index = Int()
-    var tripData = MyTrip()
+    var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
+    
+    var fetchedResultsController: NSFetchedResultsController? {
+        didSet {
+            do {
+                if let frc = fetchedResultsController {
+                    frc.delegate = self
+                    try frc.performFetch()
+                }
+                tableView.reloadData()
+            } catch let error {
+                print("NSFetchedResultsController.performFetch() failed: \(error)")
+            }
+        }
+    }
+    
+    private var indexPathForTrip = NSIndexPath()
+
+    
+    struct Constants {
+        static let RowHeightScale: CGFloat = 0.09
+        static let SegueToSummuryVC = "summaryVC"
+        static let SegueToSpendingsVC = "spendingVC"
+        static let SegueToTripSettingsVC = "tripSettingsVC"
+    }
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var settingsButton: UIButton!
+    @IBOutlet weak var addTripButton: UIButton!
     
     override func viewWillAppear(animated: Bool) {
-        tableView.reloadData()
+        updateUI()
+        
+        let tweetCount = managedObjectContext!.countForFetchRequest(NSFetchRequest(entityName: "Trip"), error: nil)
+        print("\(tweetCount) trips in data base")
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadFromFile ()
         settingUpNavigationBar()
-        settingTable ()
         self.tableView.tableFooterView = UIView(frame: CGRectZero)
+        
+    }
+   
+    private func updateUI() {
+        
+        let request = NSFetchRequest(entityName: "Trip")
+//        request.predicate = NSPredicate(format: "any")
+        request.sortDescriptors = [NSSortDescriptor(
+            key: "startDate",
+            ascending: true,
+            selector: nil
+            )]
+        fetchedResultsController = NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: managedObjectContext!,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
     }
     
-    
     // MARK: - tableView functions
+    
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-        cell.textLabel?.text = DataBase.sharedInstance.trips[indexPath.row].getName()
+        if let trip = fetchedResultsController?.objectAtIndexPath(indexPath) as? Trip {
+            var tripName: String?
+            managedObjectContext?.performBlockAndWait {
+                // it's easy to forget to do this on the proper queue
+                tripName = trip.name
+                // we're not assuming the context is a main queue context
+                // so we'll grab the screenName and return to the main queue
+                // to do the cell.textLabel?.text setting
+            }
+            cell.textLabel?.text = tripName
+        }
         return cell
     }
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return DataBase.sharedInstance.trips.count
+        if let sections = fetchedResultsController?.sections where sections.count > 0 {
+            return sections[section].numberOfObjects
+        } else {
+            return 0
+        }
     }
     
-    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        return true
-    }
+//    func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
+//        return true
+//    }
     
     func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == UITableViewCellEditingStyle.Delete {
-            DataBase.sharedInstance.trips.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-        }
+            managedObjectContext?.performBlock{
+                self.managedObjectContext!.deleteObject((self.fetchedResultsController?.objectAtIndexPath(indexPath))! as! NSManagedObject)
+                
+                do {
+                    try self.managedObjectContext!.save()
+                } catch {
+                    print(error)
+                }
+            }
+         }
     }
     
     func tableView(tableView: UITableView, shouldIndentWhileEditingRowAtIndexPath indexPath: NSIndexPath) -> Bool {
         return true
     }
     
-    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
-        let itemToMove = DataBase.sharedInstance.trips[sourceIndexPath.row]
-        DataBase.sharedInstance.trips.removeAtIndex(sourceIndexPath.row)
-        DataBase.sharedInstance.trips.insert(itemToMove, atIndex: destinationIndexPath.row)
-        self.tableView.reloadData()
-    }
+//    func tableView(tableView: UITableView, moveRowAtIndexPath sourceIndexPath: NSIndexPath, toIndexPath destinationIndexPath: NSIndexPath) {
+//        let itemToMove = listOfTrips[sourceIndexPath.row]
+//        listOfTrips.removeAtIndex(sourceIndexPath.row)
+//        listOfTrips.insert(itemToMove, atIndex: destinationIndexPath.row)
+//        self.tableView.reloadData()
+//    }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        index = indexPath.row
-        performSegueWithIdentifier("spendingVC", sender: nil)
+        
+        if (fetchedResultsController?.objectAtIndexPath(indexPath) as! Trip).tripIsOver {
+            performSegueWithIdentifier("summaryVC", sender: nil)
+        } else {
+            performSegueWithIdentifier("spendingVC", sender: nil)
+        }
     }
     
     func tableView(tableView: UITableView, accessoryButtonTappedForRowWithIndexPath indexPath: NSIndexPath) {
-        index = indexPath.row
+        self.indexPathForTrip = indexPath
         performSegueWithIdentifier("tripSettingsVC", sender: nil)
+    }
+    
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return CGRectGetHeight(UIScreen.mainScreen().bounds) * Constants.RowHeightScale;
+    }
+    
+    // MARK: NSFetchedResultsControllerDelegate
+    
+    func controllerWillChangeContent(controller: NSFetchedResultsController) {
+        tableView.beginUpdates()
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+        switch type {
+        case .Insert: tableView.insertSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        case .Delete: tableView.deleteSections(NSIndexSet(index: sectionIndex), withRowAnimation: .Fade)
+        default: break
+        }
+    }
+    
+    func controller(controller: NSFetchedResultsController, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+        switch type {
+        case .Insert:
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+        case .Delete:
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+        case .Update:
+            tableView.reloadRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+        case .Move:
+            tableView.deleteRowsAtIndexPaths([indexPath!], withRowAnimation: .Fade)
+            tableView.insertRowsAtIndexPaths([newIndexPath!], withRowAnimation: .Fade)
+        }
+    }
+    
+    func controllerDidChangeContent(controller: NSFetchedResultsController) {
+        tableView.endUpdates()
     }
     
     // MARK: - Helper functions
     
-    func addEditButton(){
-        let editButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: "editButtonPressed")
+    private func addEditButton(){
+        let editButton = UIBarButtonItem(barButtonSystemItem: .Edit, target: self, action: #selector(MainViewController.editButtonPressed))
         editButton.tintColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = editButton
     }
@@ -84,8 +190,8 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         addLeftDoneButton()
     }
     
-    func addLeftDoneButton(){
-        let leftDoneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "leftDoneButtonPressed")
+    private func addLeftDoneButton(){
+        let leftDoneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(MainViewController.leftDoneButtonPressed))
         leftDoneButton.tintColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = leftDoneButton
     }
@@ -95,60 +201,45 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         addEditButton()
     }
     
-    func settingTable () {
+    private func settingTable () {
         
-        if DataBase.sharedInstance.trips.isEmpty {
-            
-            DataBase.sharedInstance.trips.append(tripData)
-        }
+        
     }
     
-    func settingUpNavigationBar(){
+    private func settingUpNavigationBar(){
         navigationItem.hidesBackButton = true
         self.title = "Trips"
         self.navigationController!.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
         self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
+        self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         addEditButton()
     }
-    
-    func convertToMyTrip (array: NSMutableArray) ->[MyTrip] {
-        
-        var trip = MyTrip()
-        var tripsArray = [MyTrip]()
-        
-        for dict in array {
-            trip.copyFrom(dict as! [String : NSObject])
-            tripsArray.append(trip)
-            trip = MyTrip()
-        }
-        
-        return tripsArray
-    }
-    
-    func loadFromFile () {
-        if let arr = NSMutableArray(contentsOfFile: appDocsDir()+"/trips.plist") {
-            DataBase.sharedInstance.trips = convertToMyTrip(arr)
-        }
-        
-    }
-    
-    func appDocsDir() -> String {
-        let paths = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)
-        let basePath = paths.first!
-        return basePath;
-    }
-    
     
     // MARK: - Navigation
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let spendingVC = segue.destinationViewController as? SpendingViewController {
-            spendingVC.index = index
-        }
-        
-        if let tripSettingsVC = segue.destinationViewController as? TripSettingsViewController {
-            tripSettingsVC.index = index
+        if let identifier = segue.identifier {
+            switch identifier {
+                
+            case Constants.SegueToSpendingsVC:
+                if let spendingVC = segue.destinationViewController as? SpendingViewController {
+//                    spendingVC.index = index
+                }
+                
+            case Constants.SegueToTripSettingsVC:
+                    if let tripSettingsVC = segue.destinationViewController as? TripSettingsTableViewController {
+                        if let trip = fetchedResultsController?.objectAtIndexPath(indexPathForTrip) as? Trip {
+                            tripSettingsVC.name = trip.name
+                        }
+                    }
+                
+            case Constants.SegueToSummuryVC:
+                if let summaryVC = segue.destinationViewController as? SummaryViewController {
+//                    summaryVC.index = index
+                }
+            default: break
+            }
         }
     }
     

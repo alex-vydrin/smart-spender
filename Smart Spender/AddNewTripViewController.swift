@@ -7,13 +7,16 @@
 //
 
 import UIKit
+import CoreData
 
 class AddNewTripViewController: UIViewController, UITextFieldDelegate {
-
-    var tripName = String ()
-    var startDate = NSDate ()
-    var endDate = NSDate ()
-    var trip = MyTrip()
+    
+    var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
+    
+    private var tripName = String ()
+    private var startDate = NSDate ()
+    private var endDate = NSDate ()
+    private let formatter = NSDateFormatter()
     
     @IBOutlet weak var tripNameTaxtField: UITextField!
     @IBOutlet weak var startDateTextField: UITextField!
@@ -21,42 +24,35 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpNavigationBar()
-        
         startDateTextField.delegate = self
         endDateTextField.delegate = self
+        formatter.dateFormat = "dd MMM, yyyy"
     }
     
-    // При каждом редактировании поля tripNameTaxtField проверяет readyForNextScreen().
+    
     @IBAction func editingChangedTextField(sender: AnyObject) {
         readyForNextScreen ()
     }
     
     // MARK: - TextField delegate
     
-    // Вызывает клавиатуру UIDatePicker в поля для дат.
     func textFieldDidBeginEditing(textField: UITextField) {
-        
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = UIDatePickerMode.Date
         textField.inputView = datePicker
-        datePicker.addTarget(self, action: "datePickerChanged:", forControlEvents: .ValueChanged) // Вызывает метод для изменения текстовых полей в зависимости от значений UIDatePicker.
-        
+        datePicker.addTarget(self, action: #selector(AddNewTripViewController.datePickerChanged(_:)), forControlEvents: .ValueChanged)
     }
     
-    // Обновляет текстовые поля для дат со значением UIDatePicker.
+    // Updates text fields with UIDatePicker value.
     func datePickerChanged (sender: UIDatePicker) {
-        
-        let formatter = NSDateFormatter()
-        formatter.dateFormat = "dd MMM, yyyy"
-        
-        if startDateTextField.editing == true { // Вписывает значение UIDatePicker в текстовое поле, которое редактируется.
+        if startDateTextField.editing == true {
             
             startDateTextField.text = formatter.stringFromDate(sender.date)
             startDate = sender.date
-        
+            
         } else {
             
+            sender.minimumDate = formatter.dateFromString(startDateTextField.text!)
             endDateTextField.text = formatter.stringFromDate(sender.date)
             endDate = sender.date
         }
@@ -71,69 +67,76 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - helper methods
     
-    func setUpNavigationBar(){
-        navigationItem.hidesBackButton = true
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
-        addCancelButton()
-    }
-    
-    func addCancelButton(){
-        let cancelButton = UIBarButtonItem(barButtonSystemItem: .Cancel, target: self, action: "cancelButtonPressed")
-        cancelButton.tintColor = UIColor.whiteColor()
-        self.navigationItem.rightBarButtonItem = cancelButton
-    }
-    
-    func cancelButtonPressed () {
-        navigationController!.popToRootViewControllerAnimated(true)
-    }
-    
-    func addDoneButton(){
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: "doneButtonPressed")
+    private func addDoneButton(){
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .Done,
+                                         target: self,
+                                         action: #selector(AddNewTripViewController.doneButtonPressed)
+        )
         doneButton.tintColor = UIColor.whiteColor()
         self.navigationItem.rightBarButtonItem = doneButton
     }
     
     func doneButtonPressed(){
-        tripName = tripNameTaxtField.text!
-        trip = MyTrip(name: tripName, firstDay: startDate, lastDay: endDate)
-        DataBase.sharedInstance.trips.append(trip)
-        performSegueWithIdentifier("tripSettings", sender: nil)
+        
+        guard !startDate.isGreaterThanDate(endDate) else {
+            presentAlertWith ("\"End date\" could't be earlier than \"Start date\"")
+            return
+        }
+        
+        if Trip.getTripWithName(tripName, inManagedObjectContext: managedObjectContext!) == nil {
+            addTripToDataBase ()
+            performSegueWithIdentifier("Trip Settings Segue", sender: nil)
+            
+        } else {
+            presentAlertWith("Trip name \"\(tripName)\" already exists")
+        }
     }
     
-    // Проверяет все поля на заполненность. При отсутствии пустых полей, меняет кнопку Cancel на Done и наоборот.
-    func readyForNextScreen () ->Bool {
-        
-        if startDateTextField.text != "" && endDateTextField.text != "" && tripNameTaxtField.text != "" {
+    func addTripToDataBase () {
+        managedObjectContext?.performBlockAndWait{
+            Trip.createTripWithInfo(self.tripName, startDate: self.startDate, endDate: self.endDate, inManagedObjectContext: self.managedObjectContext!)
             
-            addDoneButton()
-            return true
-        
-        } else {
-            
-            addCancelButton()
-            return false
+            do {
+                try self.managedObjectContext?.save()
+            } catch let error {
+                print ("Core Data Error: \(error)")
+            }
         }
+    }
+    
+    // Checks all fields to be filled with proper values, dates to be in ascending order.
+    private func readyForNextScreen () {
+        if startDateTextField.text != "" && endDateTextField.text != "" && tripNameTaxtField.text != "" &&
+            NSCalendar.currentCalendar().compareDate(startDate,
+                                                     toDate: endDate,
+                                                     toUnitGranularity: .Day
+            ) != NSComparisonResult.OrderedDescending {
+            tripName = tripNameTaxtField.text!
+            addDoneButton()
+        }
+    }
+    
+    private func presentAlertWith (text:String) {
+        let alertController = UIAlertController(title: text, message: nil, preferredStyle: .Alert)
+        let action = UIAlertAction(title: "OK", style: .Default, handler: nil)
+        alertController.addAction(action)
+        presentViewController(alertController, animated: true, completion: nil)
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         closeKeyboard ()
     }
     
-    func closeKeyboard () {
+    private func closeKeyboard () {
         self.view.endEditing(true)
     }
     
-    
-    
-    
     // MARK: - Navigation
-
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if let tripSettignsScreen = segue.destinationViewController as? TripSettingsViewController {
-            tripSettignsScreen.index = DataBase.sharedInstance.trips.endIndex.predecessor()
+        if let tripSettignsScreen = segue.destinationViewController as? TripSettingsTableViewController {
+            tripSettignsScreen.name = tripName
         }
     }
-    
-
 }
