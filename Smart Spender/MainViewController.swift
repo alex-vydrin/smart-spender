@@ -43,9 +43,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewWillAppear(animated: Bool) {
         updateUI()
-        
-        let tweetCount = managedObjectContext!.countForFetchRequest(NSFetchRequest(entityName: "Trip"), error: nil)
-        print("\(tweetCount) trips in data base")
     }
     
     override func viewDidLoad() {
@@ -106,12 +103,6 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         if editingStyle == UITableViewCellEditingStyle.Delete {
             managedObjectContext?.performBlock{
                 self.managedObjectContext!.deleteObject((self.fetchedResultsController?.objectAtIndexPath(indexPath))! as! NSManagedObject)
-                
-                do {
-                    try self.managedObjectContext!.save()
-                } catch {
-                    print(error)
-                }
             }
          }
     }

@@ -19,6 +19,7 @@ class Trip: NSManagedObject {
                 trip.endDate = endDate
                 trip.currency = " ₴"
                 trip.spendingDay = NSDate()
+                trip.saveDataBase()
             }
     }
     
@@ -35,6 +36,11 @@ class Trip: NSManagedObject {
     class func deleteTrip (name: String, inManagedObjectContext context: NSManagedObjectContext) {
         if getTripWithName(name, inManagedObjectContext: context) != nil {
             context.deleteObject(getTripWithName(name, inManagedObjectContext: context)!)
+            do {
+                try context.save()
+            } catch let error {
+                print ("Core Data Error: \(error)")
+            }
         }
     }
     
@@ -163,6 +169,7 @@ class Trip: NSManagedObject {
                                  trip: self,
                                  inManagedObjectContext: self.managedObjectContext!
         )
+        self.saveDataBase()
     }
     
     func checkCurrentDay () {
@@ -174,6 +181,7 @@ class Trip: NSManagedObject {
             
             totalForDay = 0
             spendingDay = NSDate()
+            self.saveDataBase()
         }
     }
     
@@ -222,6 +230,14 @@ class Trip: NSManagedObject {
         case startDate
         case endDate
         case remaining
+    }
+    
+    func saveDataBase() {
+        do {
+            try self.managedObjectContext!.save()
+        } catch let error {
+            print ("Core Data Error: \(error)")
+        }
     }
     
     func addSpaceAndCurrencyTo (num: Int) ->String {

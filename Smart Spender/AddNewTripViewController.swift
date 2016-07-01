@@ -95,12 +95,6 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     func addTripToDataBase () {
         managedObjectContext?.performBlockAndWait{
             Trip.createTripWithInfo(self.tripName, startDate: self.startDate, endDate: self.endDate, inManagedObjectContext: self.managedObjectContext!)
-            
-            do {
-                try self.managedObjectContext?.save()
-            } catch let error {
-                print ("Core Data Error: \(error)")
-            }
         }
     }
     

@@ -42,7 +42,7 @@ class HistoryTableViewController: UITableViewController {
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return countSpendings() == nil ? 1 : countSpendings()!
+        return countSpendings() == 0 ? 1 : countSpendings()!
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {

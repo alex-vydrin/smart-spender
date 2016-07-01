@@ -56,9 +56,7 @@ class TripSettingsTableViewController: UITableViewController, UITextFieldDelegat
         currentTrip.name = sender.text!
         name = sender.text!
     }
-    
-    
-    
+        
     private func addDoneButton(){
         let rightDoneButton = UIBarButtonItem(barButtonSystemItem: .Done, target: self, action: #selector(TripSettingsTableViewController.DoneButtonPressed))
         rightDoneButton.tintColor = UIColor.whiteColor()
@@ -90,7 +88,7 @@ class TripSettingsTableViewController: UITableViewController, UITextFieldDelegat
                 self.currentTrip.setBudget(budget)
                 self.currentTrip.amountInBudgetLabel = self.textFieldForBudget.text!
             }
-            self.saveDataBase()
+            self.currentTrip.saveDataBase()
         }
         navigationController!.popToRootViewControllerAnimated(true)
     }
@@ -144,22 +142,12 @@ class TripSettingsTableViewController: UITableViewController, UITextFieldDelegat
         presentViewController(alertController, animated: true, completion: nil)
     }
     
-    func saveDataBase() {
-        do {
-            try managedObjectContext?.save()
-        } catch let error {
-            print ("Core Data Error: \(error)")
-        }
-    }
-    
     override func viewWillDisappear(animated: Bool) {
         if !goingForward {
             let stack = self.navigationController!.viewControllers
             if let _ = stack[stack.count-1] as? AddNewTripViewController {
                 managedObjectContext?.performBlockAndWait{
                     Trip.deleteTrip(self.currentTrip.name, inManagedObjectContext: self.managedObjectContext!)
-                    self.saveDataBase()
-                    print ("deleted in settings")
                 }
             }
         }
