@@ -12,7 +12,7 @@ import UIKit
 //    func updateData(data: MyTrip)
 //}
 
-class AddAmountViewController: UIViewController, UITextFieldDelegate {
+class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 
     var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
     
@@ -22,25 +22,35 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
     }
     
+    private var categories: [String] {
+        let standardCategories = ["Housing", "Food", "Transport", "Entertainment", "Miscellaneous"]
+        let userCategories = NSUserDefaults.standardUserDefaults().objectForKey("categories") as? [String]
+        return userCategories ?? standardCategories
+    }
+    
     private var number = ""
     private var date = NSDate()
-    
-    
+    private var picker = UIPickerView()
     
     @IBOutlet var numButtons: [UIButton]!
     @IBOutlet weak var scoreboardLabel: UILabel!
     @IBOutlet weak var textField: UITextField!
+    @IBOutlet var categoryTextField: UITextField!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationItem.hidesBackButton = true
         
+        picker.dataSource = self
+        picker.delegate = self
+        categoryTextField.inputView = picker
+        
         setUpButtons(numButtons)
         addSaveButton ()
         addCancelButton ()
         setUpTextField()
+
         self.title = name
-        
     }
     
     // MARK: - IBAction methods
@@ -93,7 +103,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         textField.delegate = self
     }
     
-    // Вызывает клавиатуру UIDatePicker в поле для дат.
     func textFieldDidBeginEditing(textField: UITextField) {
         let datePicker = UIDatePicker()
         datePicker.datePickerMode = UIDatePickerMode.Date
@@ -101,7 +110,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
         datePicker.addTarget(self, action: #selector(AddAmountViewController.datePickerChanged(_:)), forControlEvents: .ValueChanged)
     }
     
-    // Обновляет текстовое поле для дат со значением UIDatePicker.
     func datePickerChanged (sender: UIDatePicker) {
         
         let formatter = NSDateFormatter()
@@ -139,7 +147,7 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     private func saveAmount(){
         if Int(number) > 0 {
-            currentTrip.addAmount(Int(number)!, category: "uncategorized", date: date)
+            currentTrip.addAmount(Int(number)!, category: categoryTextField.text!, date: date)
         }
     }
     
@@ -166,6 +174,22 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         closeKeyboard ()
+    }
+    
+    func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return categories.count
+    }
+    
+    func pickerView(pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        categoryTextField.text = categories[row]
+    }
+    
+    func pickerView(pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return categories[row]
     }
     
     private func closeKeyboard () {

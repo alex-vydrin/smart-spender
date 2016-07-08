@@ -118,7 +118,6 @@ class TripSettingsTableViewController: UITableViewController, UITextFieldDelegat
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd MMM, yyyy"
         
-        
         if startDateTextField.editing == true {
             
             startDateTextField.text = formatter.stringFromDate(sender.date)

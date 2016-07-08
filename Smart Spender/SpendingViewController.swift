@@ -28,7 +28,6 @@ class SpendingViewController: UIViewController {
     @IBOutlet weak var dateLabel: UILabel!
     
     override func viewWillAppear(animated: Bool) {
-        currentTrip.checkCurrentDay()
         updateLabels ()
     }
     

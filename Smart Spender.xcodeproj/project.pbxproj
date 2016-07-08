@@ -19,11 +19,13 @@
 		1B1E0E141D12ADCD00C1DD66 /* Spendings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1E0E101D12ADCD00C1DD66 /* Spendings.swift */; };
 		1B1E0E161D12DC1400C1DD66 /* CoreDataTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B1E0E151D12DC1400C1DD66 /* CoreDataTableViewController.swift */; };
 		1B370B701CCE09CF003F21C6 /* AddNewTripViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B370B6F1CCE09CF003F21C6 /* AddNewTripViewController.swift */; };
-		1B370B761CCE9B73003F21C6 /* MyTrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B370B751CCE9B73003F21C6 /* MyTrip.swift */; };
 		1B3727A61CCFFE8800F63BBD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1B3727A41CCFFE8800F63BBD /* Main.storyboard */; };
 		1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */; };
 		1B51B8821CEC951700B25384 /* SummaryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B51B8811CEC951700B25384 /* SummaryViewController.swift */; };
-		1BE77DA51CE3501800B3ADD7 /* DataBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE77DA41CE3501800B3ADD7 /* DataBase.swift */; };
+		1B6D66E71D2E43590083D1CB /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66E61D2E43590083D1CB /* SettingsTableViewController.swift */; };
+		1B6D66E91D2E47970083D1CB /* CurrancyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66E81D2E47970083D1CB /* CurrancyTableViewController.swift */; };
+		1B6D66EB1D2E47E40083D1CB /* CategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66EA1D2E47E40083D1CB /* CategoryTableViewController.swift */; };
+		1B6D66ED1D2FC82E0083D1CB /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66EC1D2FC82E0083D1CB /* HistoryTableViewCell.swift */; };
 		1BE77DA71CE4821B00B3ADD7 /* HistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */; };
 		1BE7F64A1D25274600795CDA /* Exctensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE7F6491D25274600795CDA /* Exctensions.swift */; };
 /* End PBXBuildFile section */
@@ -43,11 +45,13 @@
 		1B1E0E101D12ADCD00C1DD66 /* Spendings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Spendings.swift; sourceTree = "<group>"; };
 		1B1E0E151D12DC1400C1DD66 /* CoreDataTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataTableViewController.swift; sourceTree = "<group>"; };
 		1B370B6F1CCE09CF003F21C6 /* AddNewTripViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddNewTripViewController.swift; sourceTree = "<group>"; };
-		1B370B751CCE9B73003F21C6 /* MyTrip.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyTrip.swift; sourceTree = "<group>"; };
 		1B3727A51CCFFE8800F63BBD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1B3727A71CD1066D00F63BBD /* SpendingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpendingViewController.swift; sourceTree = "<group>"; };
 		1B51B8811CEC951700B25384 /* SummaryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SummaryViewController.swift; sourceTree = "<group>"; };
-		1BE77DA41CE3501800B3ADD7 /* DataBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBase.swift; sourceTree = "<group>"; };
+		1B6D66E61D2E43590083D1CB /* SettingsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		1B6D66E81D2E47970083D1CB /* CurrancyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrancyTableViewController.swift; sourceTree = "<group>"; };
+		1B6D66EA1D2E47E40083D1CB /* CategoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryTableViewController.swift; sourceTree = "<group>"; };
+		1B6D66EC1D2FC82E0083D1CB /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
 		1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewController.swift; sourceTree = "<group>"; };
 		1BE7F6491D25274600795CDA /* Exctensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exctensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -66,6 +70,9 @@
 		09A065051CD9F52300D79EC2 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				1B6D66EA1D2E47E40083D1CB /* CategoryTableViewController.swift */,
+				1B6D66E81D2E47970083D1CB /* CurrancyTableViewController.swift */,
+				1B6D66E61D2E43590083D1CB /* SettingsTableViewController.swift */,
 				1B1E0E151D12DC1400C1DD66 /* CoreDataTableViewController.swift */,
 				1B1D8CD61D09616800256E55 /* TripSettingsTableViewController.swift */,
 				1B51B8811CEC951700B25384 /* SummaryViewController.swift */,
@@ -97,13 +104,12 @@
 		1B0532FB1CC7FA3100208712 /* Smart Spender */ = {
 			isa = PBXGroup;
 			children = (
+				1B6D66EC1D2FC82E0083D1CB /* HistoryTableViewCell.swift */,
 				1BE7F6491D25274600795CDA /* Exctensions.swift */,
 				1B1E0E081D12AC9600C1DD66 /* Core Data */,
 				09A065051CD9F52300D79EC2 /* Controllers */,
 				1B0532FC1CC7FA3100208712 /* AppDelegate.swift */,
-				1B370B751CCE9B73003F21C6 /* MyTrip.swift */,
 				1B3727A41CCFFE8800F63BBD /* Main.storyboard */,
-				1BE77DA41CE3501800B3ADD7 /* DataBase.swift */,
 				1B0533031CC7FA3100208712 /* Assets.xcassets */,
 				1B0533081CC7FA3100208712 /* Info.plist */,
 			);
@@ -195,18 +201,20 @@
 			files = (
 				1BE7F64A1D25274600795CDA /* Exctensions.swift in Sources */,
 				1B05331F1CC9EBAD00208712 /* AddAmountViewController.swift in Sources */,
-				1B370B761CCE9B73003F21C6 /* MyTrip.swift in Sources */,
 				1B1E0E161D12DC1400C1DD66 /* CoreDataTableViewController.swift in Sources */,
+				1B6D66E91D2E47970083D1CB /* CurrancyTableViewController.swift in Sources */,
 				1B0532FD1CC7FA3100208712 /* AppDelegate.swift in Sources */,
 				1B370B701CCE09CF003F21C6 /* AddNewTripViewController.swift in Sources */,
+				1B6D66EB1D2E47E40083D1CB /* CategoryTableViewController.swift in Sources */,
 				1BE77DA71CE4821B00B3ADD7 /* HistoryTableViewController.swift in Sources */,
 				1B1D8CD71D09616800256E55 /* TripSettingsTableViewController.swift in Sources */,
+				1B6D66E71D2E43590083D1CB /* SettingsTableViewController.swift in Sources */,
 				1B1E0E111D12ADCD00C1DD66 /* Trip+CoreDataProperties.swift in Sources */,
 				1B1E0E121D12ADCD00C1DD66 /* Trip.swift in Sources */,
 				1B1E0E141D12ADCD00C1DD66 /* Spendings.swift in Sources */,
 				1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */,
-				1BE77DA51CE3501800B3ADD7 /* DataBase.swift in Sources */,
 				1B0533251CCA399F00208712 /* MainViewController.swift in Sources */,
+				1B6D66ED1D2FC82E0083D1CB /* HistoryTableViewCell.swift in Sources */,
 				1B1E0E131D12ADCD00C1DD66 /* Spendings+CoreDataProperties.swift in Sources */,
 				1B1E0DFF1D12A9FC00C1DD66 /* Model.xcdatamodeld in Sources */,
 				1B51B8821CEC951700B25384 /* SummaryViewController.swift in Sources */,

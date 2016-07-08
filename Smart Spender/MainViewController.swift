@@ -49,11 +49,10 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewDidLoad()
         settingUpNavigationBar()
         self.tableView.tableFooterView = UIView(frame: CGRectZero)
-        
+        firstLaunch ()
     }
    
     private func updateUI() {
-        
         let request = NSFetchRequest(entityName: "Trip")
 //        request.predicate = NSPredicate(format: "any")
         request.sortDescriptors = [NSSortDescriptor(
@@ -67,6 +66,17 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+    }
+    
+    func firstLaunch () {
+        let wasFirstLaunch = NSUserDefaults.standardUserDefaults().boolForKey("wasFirstLaunch")
+        
+        if !wasFirstLaunch {
+            managedObjectContext!.performBlockAndWait{
+                Trip.createTripWithInfo("Current trip", startDate: NSDate(), endDate: NSDate(), inManagedObjectContext: self.managedObjectContext!)
+            }
+            NSUserDefaults.standardUserDefaults().setBool(true, forKey: "wasFirstLaunch")
+        }
     }
     
     // MARK: - tableView functions
@@ -198,7 +208,7 @@ class MainViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     private func settingUpNavigationBar(){
-        navigationItem.hidesBackButton = true
+//        navigationItem.hidesBackButton = true
         self.title = "Trips"
         self.navigationController!.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
         self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]

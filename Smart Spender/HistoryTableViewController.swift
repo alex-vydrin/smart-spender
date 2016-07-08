@@ -29,9 +29,12 @@ class HistoryTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "History"
+        self.tableView.contentInset = UIEdgeInsetsMake(Constants.PxlUnderNavigationBar,0,0,0);
+        navigationController?.navigationBar.translucent = false
     }
 
     struct Constants {
+        static let PxlUnderNavigationBar: CGFloat = 22
         static let RowHeightScale: CGFloat = 0.08
     }
     
@@ -49,11 +52,12 @@ class HistoryTableViewController: UITableViewController {
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd MMMM yyyy"
         
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! HistoryTableViewCell
         
         if currentTrip.moneySpent != 0 {
-            cell.textLabel?.text = addSpace(String (currentTrip.spendingsArray![indexPath.row].amount!))
-            cell.detailTextLabel?.text = formatter.stringFromDate (currentTrip.spendingsArray![indexPath.row].date!)
+            cell.amountLabel.text = addSpace(String (currentTrip.spendingsArray![indexPath.row].amount!))
+            cell.dateLabel.text = formatter.stringFromDate (currentTrip.spendingsArray![indexPath.row].date!)
+            cell.categoryLabel.text = currentTrip.spendingsArray![indexPath.row].category
         } else {
             cell.textLabel?.text = "No spendings yet..."
             cell.detailTextLabel?.text = ""
@@ -64,6 +68,10 @@ class HistoryTableViewController: UITableViewController {
     
     override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return name
+    }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 10
     }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {

@@ -11,14 +11,13 @@ import CoreData
 
 
 class Trip: NSManagedObject {
-    
+    let calendar = NSCalendar.currentCalendar()
     class func createTripWithInfo (name: String, startDate: NSDate, endDate: NSDate, inManagedObjectContext context: NSManagedObjectContext) {
             if let trip = NSEntityDescription.insertNewObjectForEntityForName("Trip", inManagedObjectContext: context) as? Trip {
                 trip.name = name
                 trip.startDate = startDate
                 trip.endDate = endDate
                 trip.currency = " ₴"
-                trip.spendingDay = NSDate()
                 trip.saveDataBase()
             }
     }
@@ -91,12 +90,28 @@ class Trip: NSManagedObject {
         }
     }
     
+    var totalForDay: Int {
+        var total = 0
+        
+        let today = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: NSDate())
+        
+        if spendingsArray != nil {
+            for (_, dict) in spendingsArray!.enumerate() {
+                let spendingDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: dict.date!)
+                if today == spendingDay {
+                    total += dict.amount as! Int
+                }
+            }
+        }
+        return total
+    }
+    
     var remaining: Int {
             if moneyLeft >= Int(dailyBudget!) {
                 
-                return Int(dailyBudget!) - Int(totalForDay!) <= 0 ? 0 : Int(dailyBudget!) - Int(totalForDay!)
+                return Int(dailyBudget!) - totalForDay <= 0 ? 0 : Int(dailyBudget!) - totalForDay
                 
-            } else if Int(totalForDay!) > Int(dailyBudget!) {
+            } else if totalForDay > Int(dailyBudget!) {
                 
                 return 0
             }
@@ -124,7 +139,9 @@ class Trip: NSManagedObject {
         
         self.managedObjectContext?.performBlockAndWait{
             let request = NSFetchRequest(entityName: "Spendings")
+            let descriptor = NSSortDescriptor(key: "date", ascending: false)
             request.predicate = NSPredicate(format: "trip.name = %@", self.name)
+            request.sortDescriptors = [descriptor]
             
             if let spendingsArr = (try? self.managedObjectContext!.executeFetchRequest(request)) as? [Spendings] {
                 spendings = spendingsArr
@@ -160,9 +177,6 @@ class Trip: NSManagedObject {
     }
     
     func addAmount(amount: Int, category: String, date: NSDate) {
-        totalForDay = Int (totalForDay!) + amount
-        spendingDay = date
-
         Spendings.createSpending(amount,
                                  category: category,
                                  date: date,
@@ -172,18 +186,17 @@ class Trip: NSManagedObject {
         self.saveDataBase()
     }
     
-    func checkCurrentDay () {
-        let calendar = NSCalendar.currentCalendar()
-        let currentDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: NSDate())
-        let lastSpendingDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: spendingDay!)
-        
-        if currentDay.day != lastSpendingDay.day || currentDay.month != lastSpendingDay.month {
-            
-            totalForDay = 0
-            spendingDay = NSDate()
-            self.saveDataBase()
-        }
-    }
+//    func spendingDays () -> Set <NSDateComponents>{
+//        var dateSet = Set <NSDateComponents>()
+//        
+//        if let spendingsArr = spendingsArray {
+//            for (_, dict) in spendingsArr.enumerate() {
+//                let date = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: dict.date!)
+//                dateSet.insert(date)
+//            }
+//        }
+//        return dateSet
+//    }
     
     func stringFrom (variable: Variable) -> String {
         let formatter = NSDateFormatter()
@@ -195,7 +208,7 @@ class Trip: NSManagedObject {
         case .dailyBudget :
             return addSpaceAndCurrencyTo(Int(dailyBudget!))
         case .totalForDay :
-            return addSpaceAndCurrencyTo(Int(totalForDay!))
+            return addSpaceAndCurrencyTo(totalForDay)
         case .daysLeft :
             return daysLeft
         case .daysSpent :

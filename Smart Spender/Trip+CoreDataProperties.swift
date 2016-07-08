@@ -20,7 +20,6 @@ extension Trip {
     @NSManaged var startDate: NSDate
     @NSManaged var tripBudget: NSNumber?
     @NSManaged var dailyBudget: NSNumber?
-    @NSManaged var totalForDay: NSNumber?
     @NSManaged var amountInBudgetLabel: String?
     @NSManaged var currency: String?
     @NSManaged var spendingDay: NSDate?

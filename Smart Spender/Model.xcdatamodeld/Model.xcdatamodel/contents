@@ -13,14 +13,12 @@
         <attribute name="endDate" attributeType="Date" defaultDateTimeInterval="487868760" syncable="YES"/>
         <attribute name="isTripBudget" attributeType="Boolean" defaultValueString="NO" syncable="YES"/>
         <attribute name="name" attributeType="String" defaultValueString="none" syncable="YES"/>
-        <attribute name="spendingDay" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="startDate" attributeType="Date" defaultDateTimeInterval="487868700" syncable="YES"/>
-        <attribute name="totalForDay" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="tripBudget" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <relationship name="spendings" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Spendings" inverseName="trip" inverseEntity="Spendings" syncable="YES"/>
     </entity>
     <elements>
         <element name="Spendings" positionX="-155" positionY="-558" width="128" height="103"/>
-        <element name="Trip" positionX="-378" positionY="-592" width="126" height="210"/>
+        <element name="Trip" positionX="-378" positionY="-592" width="126" height="178"/>
     </elements>
 </model>
