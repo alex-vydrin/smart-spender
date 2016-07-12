@@ -26,6 +26,10 @@
 		1B6D66E91D2E47970083D1CB /* CurrancyTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66E81D2E47970083D1CB /* CurrancyTableViewController.swift */; };
 		1B6D66EB1D2E47E40083D1CB /* CategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66EA1D2E47E40083D1CB /* CategoryTableViewController.swift */; };
 		1B6D66ED1D2FC82E0083D1CB /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66EC1D2FC82E0083D1CB /* HistoryTableViewCell.swift */; };
+		1B6D66F31D33F9200083D1CB /* TableSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6D66F21D33F9200083D1CB /* TableSectionHeader.swift */; };
+		1B6D66F51D3401670083D1CB /* TableSectionHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1B6D66F41D3401670083D1CB /* TableSectionHeader.xib */; };
+		1BD4C3721D34C1FC004E65FB /* AddCategoryHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1BD4C3711D34C1FC004E65FB /* AddCategoryHeader.xib */; };
+		1BD4C3741D34C21A004E65FB /* AddCategoryHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BD4C3731D34C21A004E65FB /* AddCategoryHeader.swift */; };
 		1BE77DA71CE4821B00B3ADD7 /* HistoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */; };
 		1BE7F64A1D25274600795CDA /* Exctensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1BE7F6491D25274600795CDA /* Exctensions.swift */; };
 /* End PBXBuildFile section */
@@ -52,6 +56,10 @@
 		1B6D66E81D2E47970083D1CB /* CurrancyTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CurrancyTableViewController.swift; sourceTree = "<group>"; };
 		1B6D66EA1D2E47E40083D1CB /* CategoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CategoryTableViewController.swift; sourceTree = "<group>"; };
 		1B6D66EC1D2FC82E0083D1CB /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
+		1B6D66F21D33F9200083D1CB /* TableSectionHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableSectionHeader.swift; sourceTree = "<group>"; };
+		1B6D66F41D3401670083D1CB /* TableSectionHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableSectionHeader.xib; sourceTree = "<group>"; };
+		1BD4C3711D34C1FC004E65FB /* AddCategoryHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddCategoryHeader.xib; sourceTree = "<group>"; };
+		1BD4C3731D34C21A004E65FB /* AddCategoryHeader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddCategoryHeader.swift; sourceTree = "<group>"; };
 		1BE77DA61CE4821B00B3ADD7 /* HistoryTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryTableViewController.swift; sourceTree = "<group>"; };
 		1BE7F6491D25274600795CDA /* Exctensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exctensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,6 +118,10 @@
 				09A065051CD9F52300D79EC2 /* Controllers */,
 				1B0532FC1CC7FA3100208712 /* AppDelegate.swift */,
 				1B3727A41CCFFE8800F63BBD /* Main.storyboard */,
+				1BD4C3711D34C1FC004E65FB /* AddCategoryHeader.xib */,
+				1BD4C3731D34C21A004E65FB /* AddCategoryHeader.swift */,
+				1B6D66F41D3401670083D1CB /* TableSectionHeader.xib */,
+				1B6D66F21D33F9200083D1CB /* TableSectionHeader.swift */,
 				1B0533031CC7FA3100208712 /* Assets.xcassets */,
 				1B0533081CC7FA3100208712 /* Info.plist */,
 			);
@@ -188,6 +200,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B3727A61CCFFE8800F63BBD /* Main.storyboard in Resources */,
+				1B6D66F51D3401670083D1CB /* TableSectionHeader.xib in Resources */,
+				1BD4C3721D34C1FC004E65FB /* AddCategoryHeader.xib in Resources */,
 				1B0533041CC7FA3100208712 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -210,8 +224,10 @@
 				1B1D8CD71D09616800256E55 /* TripSettingsTableViewController.swift in Sources */,
 				1B6D66E71D2E43590083D1CB /* SettingsTableViewController.swift in Sources */,
 				1B1E0E111D12ADCD00C1DD66 /* Trip+CoreDataProperties.swift in Sources */,
+				1BD4C3741D34C21A004E65FB /* AddCategoryHeader.swift in Sources */,
 				1B1E0E121D12ADCD00C1DD66 /* Trip.swift in Sources */,
 				1B1E0E141D12ADCD00C1DD66 /* Spendings.swift in Sources */,
+				1B6D66F31D33F9200083D1CB /* TableSectionHeader.swift in Sources */,
 				1B3727A81CD1066D00F63BBD /* SpendingViewController.swift in Sources */,
 				1B0533251CCA399F00208712 /* MainViewController.swift in Sources */,
 				1B6D66ED1D2FC82E0083D1CB /* HistoryTableViewCell.swift in Sources */,

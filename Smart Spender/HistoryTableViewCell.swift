@@ -12,7 +12,7 @@ class HistoryTableViewCell: UITableViewCell {
 
     @IBOutlet var amountLabel: UILabel!
     @IBOutlet var categoryLabel: UILabel!
-    @IBOutlet var dateLabel: UILabel!
+    @IBOutlet var timeLabel: UILabel!
         
     override func awakeFromNib() {
         super.awakeFromNib()

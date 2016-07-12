@@ -19,6 +19,7 @@ class HistoryTableViewController: UITableViewController {
         return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
     }
     
+    let formatter = NSDateFormatter()
     
     @IBOutlet weak var totalLabel: UILabel!
     
@@ -29,53 +30,80 @@ class HistoryTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "History"
-        self.tableView.contentInset = UIEdgeInsetsMake(Constants.PxlUnderNavigationBar,0,0,0);
+//        self.tableView.contentInset = UIEdgeInsetsMake(Constants.PxlUnderNavigationBar,0,0,0);
         navigationController?.navigationBar.translucent = false
+        
+        let nib = UINib(nibName: "TableSectionHeader", bundle: nil)
+        tableView.registerNib(nib, forHeaderFooterViewReuseIdentifier: "TableSectionHeader")
     }
 
     struct Constants {
         static let PxlUnderNavigationBar: CGFloat = 22
         static let RowHeightScale: CGFloat = 0.08
-    }
+        static let HeaderHeight: CGFloat = 4
+}
     
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return currentTrip.getSpendingsArray().isEmpty ? 1 : currentTrip.getSpendingsArray().count
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return countSpendings() == 0 ? 1 : countSpendings()!
+        return currentTrip.getSpendingsArray().isEmpty ? 1 : currentTrip.getSpendingsArray()[section].count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let formatter = NSDateFormatter()
-        formatter.dateFormat = "dd MMMM yyyy"
+        
+        formatter.dateFormat = "HH:mm"
         
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! HistoryTableViewCell
         
         if currentTrip.moneySpent != 0 {
-            cell.amountLabel.text = addSpace(String (currentTrip.spendingsArray![indexPath.row].amount!))
-            cell.dateLabel.text = formatter.stringFromDate (currentTrip.spendingsArray![indexPath.row].date!)
-            cell.categoryLabel.text = currentTrip.spendingsArray![indexPath.row].category
+            cell.amountLabel.text = addSpace(String (currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].amount!))
+            cell.timeLabel.text = formatter.stringFromDate (currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].date!)
+            cell.categoryLabel.text = currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].category
         } else {
             cell.textLabel?.text = "No spendings yet..."
-            cell.detailTextLabel?.text = ""
+            cell.amountLabel.text = ""
+            cell.timeLabel.text = ""
+            cell.categoryLabel.text = ""
         }
         
         return cell
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return name
-    }
+//    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//
+//        return currentTrip.getSpendingsArray().isEmpty ? "" : formatter.stringFromDate (currentTrip.getSpendingsArray()[section][0].date!)
+//    }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 10
-    }
+//    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        return Constants.HeaderHeight
+//    }
     
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return CGRectGetHeight(UIScreen.mainScreen().bounds) * Constants.RowHeightScale;
+    }
+    
+//    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int){
+//        let title = UILabel()
+//        title.font = UIFont.systemFontOfSize(15, weight: UIFontWeightSemibold)
+//        title.textColor = UIColor.blackColor()
+//        
+//        let header = view as! UITableViewHeaderFooterView
+//        header.textLabel?.font=title.font
+//        header.textLabel?.textColor=title.textColor
+//    }
+    
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        formatter.dateFormat = "d MMMM, EEEE"
+        
+        let cell = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("TableSectionHeader")
+        let header = cell as! TableSectionHeader
+        header.headerTextLabel.text = currentTrip.getSpendingsArray().isEmpty ? "" : formatter.stringFromDate (currentTrip.getSpendingsArray()[section][0].date!)
+        
+        return cell
     }
     
     func addSpace (num: String) ->String {
@@ -89,16 +117,6 @@ class HistoryTableViewController: UITableViewController {
             }
         }
         return newNum + currentTrip.currency!
-    }
-    
-    private func countSpendings () -> Int? {
-        var count: Int?
-        managedObjectContext?.performBlockAndWait {
-            let request = NSFetchRequest(entityName: "Spendings")
-            request.predicate = NSPredicate(format: "trip.name = %@", self.name)
-            count = self.managedObjectContext!.countForFetchRequest(request, error: nil)
-        }
-        return count
     }
     
     /*

@@ -11,7 +11,10 @@ import CoreData
 
 
 class Trip: NSManagedObject {
+    
     let calendar = NSCalendar.currentCalendar()
+    let dateFormatter = NSDateFormatter()
+    
     class func createTripWithInfo (name: String, startDate: NSDate, endDate: NSDate, inManagedObjectContext context: NSManagedObjectContext) {
             if let trip = NSEntityDescription.insertNewObjectForEntityForName("Trip", inManagedObjectContext: context) as? Trip {
                 trip.name = name
@@ -95,11 +98,13 @@ class Trip: NSManagedObject {
         
         let today = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: NSDate())
         
-        if spendingsArray != nil {
-            for (_, dict) in spendingsArray!.enumerate() {
-                let spendingDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: dict.date!)
-                if today == spendingDay {
-                    total += dict.amount as! Int
+        if !getSpendingsArray().isEmpty {
+            for (_, spendingsForDay) in getSpendingsArray().enumerate() {
+                for (_, spending) in spendingsForDay.enumerate() {
+                    let spendingDay = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: spending.date!)
+                    if today == spendingDay {
+                        total += spending.amount as! Int
+                    }
                 }
             }
         }
@@ -134,8 +139,11 @@ class Trip: NSManagedObject {
         return totalSpent
     }
     
-    var spendingsArray: [Spendings]? {
-        var spendings: [Spendings]?
+    func getSpendingsArray() -> [[Spendings]] {
+        
+        var arrFilter = [String]()
+        var filteredSpendings = [Spendings]()
+        var multiArr = [[Spendings]]()
         
         self.managedObjectContext?.performBlockAndWait{
             let request = NSFetchRequest(entityName: "Spendings")
@@ -144,14 +152,37 @@ class Trip: NSManagedObject {
             request.sortDescriptors = [descriptor]
             
             if let spendingsArr = (try? self.managedObjectContext!.executeFetchRequest(request)) as? [Spendings] {
-                spendings = spendingsArr
+                self.dateFormatter.dateFormat = "dd MMMM"
+                
+                for (_, spending) in spendingsArr.enumerate() {
+                    let dateStr = self.dateFormatter.stringFromDate(spending.date!)
+                    
+                    if !arrFilter.contains(dateStr) {
+                        arrFilter.append(dateStr)
+                        filteredSpendings.append(spending)
+                    }
+                }
+                
+                for (_, filterItem) in arrFilter.enumerate() {
+                    
+                    var buffer: [Spendings] = []
+                    
+                    for (_, currentItem) in spendingsArr.enumerate() {
+                        if self.dateFormatter.stringFromDate(currentItem.date!) == filterItem {
+                            buffer.append(currentItem)
+                        }
+                    }
+                    
+                    multiArr.append(buffer)
+                }
             }
         }
-        return spendings
+        return multiArr
     }
+
     
     private func daysFrom (start: NSDate, to lastDate: NSDate)->Int {
-        let dateFormatter = NSDateFormatter()
+        
         dateFormatter.dateFormat = "dd-MM-yyyy"
         let startDate = dateFormatter.stringFromDate(start)
         let toDate = dateFormatter.stringFromDate(lastDate)
@@ -186,17 +217,6 @@ class Trip: NSManagedObject {
         self.saveDataBase()
     }
     
-//    func spendingDays () -> Set <NSDateComponents>{
-//        var dateSet = Set <NSDateComponents>()
-//        
-//        if let spendingsArr = spendingsArray {
-//            for (_, dict) in spendingsArr.enumerate() {
-//                let date = calendar.components([NSCalendarUnit.Day, NSCalendarUnit.Month], fromDate: dict.date!)
-//                dateSet.insert(date)
-//            }
-//        }
-//        return dateSet
-//    }
     
     func stringFrom (variable: Variable) -> String {
         let formatter = NSDateFormatter()
@@ -204,23 +224,23 @@ class Trip: NSManagedObject {
         
         switch variable {
         case .tripBudget :
-            return addSpaceAndCurrencyTo(Int(tripBudget!))
+            return Int(tripBudget!).stringWithSepator + currency!
         case .dailyBudget :
-            return addSpaceAndCurrencyTo(Int(dailyBudget!))
+            return Int(dailyBudget!).stringWithSepator + currency!
         case .totalForDay :
-            return addSpaceAndCurrencyTo(totalForDay)
+            return totalForDay.stringWithSepator + currency!
         case .daysLeft :
             return daysLeft
         case .daysSpent :
             return String (daysSpent)
         case .remaining :
-            return addSpaceAndCurrencyTo(remaining)
+            return remaining.stringWithSepator + currency!
         case .averageSpending :
-            return addSpaceAndCurrencyTo(averageSpending)
+            return averageSpending.stringWithSepator + currency!
         case .moneyLeft :
-            return addSpaceAndCurrencyTo(moneyLeft)
+            return moneyLeft.stringWithSepator + currency!
         case .moneySpent :
-            return addSpaceAndCurrencyTo(moneySpent)
+            return moneySpent.stringWithSepator + currency!
         case .tripDates :
             return "\(formatter.stringFromDate(startDate)) - \(formatter.stringFromDate(endDate))"
         case .startDate :
@@ -251,19 +271,6 @@ class Trip: NSManagedObject {
         } catch let error {
             print ("Core Data Error: \(error)")
         }
-    }
-    
-    func addSpaceAndCurrencyTo (num: Int) ->String {
-        let str = String (num)
-        var newNum = ""
-        for i in 1...str.characters.count {
-            newNum = "\(str[str.endIndex.advancedBy(-i)])" + newNum
-            
-            if i%3 == 0 && str.characters.count > i {
-                newNum = " " + newNum
-            }
-        }
-        return newNum + currency!
     }
     
 }

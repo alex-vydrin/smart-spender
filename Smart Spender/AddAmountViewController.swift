@@ -8,10 +8,6 @@
 
 import UIKit
 
-//protocol VCTwoDelegate {
-//    func updateData(data: MyTrip)
-//}
-
 class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerViewDataSource, UIPickerViewDelegate {
 
     var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
@@ -21,6 +17,8 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
     var currentTrip: Trip {
         return Trip.getTripWithName(name, inManagedObjectContext: managedObjectContext!)!
     }
+    
+    let formatter = NSDateFormatter()
     
     private var categories: [String] {
         let standardCategories = ["Housing", "Food", "Transport", "Entertainment", "Miscellaneous"]
@@ -55,14 +53,14 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
     
     // MARK: - IBAction methods
     
-    @IBAction func numButtons(sender: UIButton) { // Adds numbers from buttons to the label.
+    @IBAction func numButtons(sender: UIButton) {
         number += "\(sender.currentTitle!)"
         
         if number[number.startIndex] == "0" {
             number.removeAtIndex(number.startIndex)
             resetScoreboardLabel()
         } else {
-            scoreboardLabel.text = addComa(number)
+            scoreboardLabel.text = Int (number)?.stringWithSepator
         }
     }
     
@@ -71,14 +69,15 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
         resetScoreboardLabel()
     }
     
-    @IBAction func removeNum(sender: UIButton) { // Removes rightmost number from the label. When last number removed updates label to "0".
+    // Removes rightmost number from the label. When last number removed updates label to "0".
+    @IBAction func removeNum(sender: UIButton) {
         if !number.isEmpty {
             number.removeAtIndex(number.endIndex.predecessor())
             
             if number.isEmpty {
                 resetScoreboardLabel()
             } else {
-                scoreboardLabel.text = addComa(number)
+                scoreboardLabel.text = Int (number)?.stringWithSepator
             }
         }
     }
@@ -97,7 +96,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
     }
     
     private func setUpTextField(){
-        let formatter = NSDateFormatter()
         formatter.dateFormat = "dd.MM.yyyy"
         textField.text = formatter.stringFromDate(NSDate())
         textField.delegate = self
@@ -111,8 +109,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
     }
     
     func datePickerChanged (sender: UIDatePicker) {
-        
-        let formatter = NSDateFormatter()
         formatter.dateFormat = "dd.MM.yyyy"
         
         if textField.editing == true { // Вписывает значение UIDatePicker в текстовое поле, которое редактируется.
@@ -130,19 +126,6 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
     private func resetScoreboardLabel() {
         scoreboardLabel.text = "0"
         number = ""
-    }
-    
-    func addComa (num: String) ->String {
-        var newNum = ""
-        
-        for i in 1...num.characters.count {
-            newNum = "\(num[num.endIndex.advancedBy(-i)])" + newNum
-            
-            if i%3 == 0 && num.characters.count > i {
-                newNum = " " + newNum
-            }
-        }
-        return newNum
     }
     
     private func saveAmount(){
@@ -179,6 +162,8 @@ class AddAmountViewController: UIViewController, UITextFieldDelegate, UIPickerVi
     func numberOfComponentsInPickerView(pickerView: UIPickerView) -> Int {
         return 1
     }
+    
+    // MARK: PickerView delegate
     
     func pickerView(pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return categories.count
