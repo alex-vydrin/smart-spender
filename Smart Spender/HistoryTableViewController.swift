@@ -73,35 +73,15 @@ class HistoryTableViewController: UITableViewController {
         return cell
     }
     
-//    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//
-//        return currentTrip.getSpendingsArray().isEmpty ? "" : formatter.stringFromDate (currentTrip.getSpendingsArray()[section][0].date!)
-//    }
-    
-//    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        return Constants.HeaderHeight
-//    }
-    
     override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return CGRectGetHeight(UIScreen.mainScreen().bounds) * Constants.RowHeightScale;
     }
     
-//    override func tableView(tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int){
-//        let title = UILabel()
-//        title.font = UIFont.systemFontOfSize(15, weight: UIFontWeightSemibold)
-//        title.textColor = UIColor.blackColor()
-//        
-//        let header = view as! UITableViewHeaderFooterView
-//        header.textLabel?.font=title.font
-//        header.textLabel?.textColor=title.textColor
-//    }
-    
     override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         formatter.dateFormat = "d MMMM, EEEE"
         
-        let cell = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("TableSectionHeader")
-        let header = cell as! TableSectionHeader
-        header.headerTextLabel.text = currentTrip.getSpendingsArray().isEmpty ? "" : formatter.stringFromDate (currentTrip.getSpendingsArray()[section][0].date!)
+        let cell = self.tableView.dequeueReusableHeaderFooterViewWithIdentifier("TableSectionHeader") as! TableSectionHeader
+        cell.headerTextLabel.text = currentTrip.getSpendingsArray().isEmpty ? "" : formatter.stringFromDate (currentTrip.getSpendingsArray()[section][0].date!)
         
         return cell
     }

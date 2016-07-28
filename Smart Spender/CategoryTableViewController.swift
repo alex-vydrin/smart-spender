@@ -12,7 +12,6 @@ class CategoryTableViewController: UITableViewController {
 
     private var standardCategories = ["Housing", "Food", "Transport", "Entertainment", "Miscellaneous"] {
         didSet {
-            print ("standard categories didset")
             NSUserDefaults.standardUserDefaults().setObject(standardCategories, forKey: "categories")
 //            self.tableView.reloadData()
         }
@@ -21,7 +20,6 @@ class CategoryTableViewController: UITableViewController {
     private var categories: [String] {
         get {
             let userCategories = NSUserDefaults.standardUserDefaults().objectForKey("categories") as? [String] ?? standardCategories
-            print (NSUserDefaults.standardUserDefaults().objectForKey("categories"))
             return userCategories
         }
         set {
@@ -41,6 +39,7 @@ class CategoryTableViewController: UITableViewController {
         self.navigationController!.navigationBar.setBackgroundImage(UIImage.init(named: "Toolbar Label"), forBarMetrics: .Default)
         self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
+        self.navigationController?.navigationBar.translucent = false
     }
 
     // MARK: - Table view data source
@@ -54,7 +53,19 @@ class CategoryTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return categories.count
     }
+    
+    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 60
+    }
 
+    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let header = AddCategoryHeader.instanceFromNib()
+        header.setUpButton ()
+        header.delegate = self
+        header.center = view.center
+        
+        return header
+    }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
@@ -82,30 +93,10 @@ class CategoryTableViewController: UITableViewController {
         }    
     }
     
+}
 
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(tableView: UITableView, moveRowAtIndexPath fromIndexPath: NSIndexPath, toIndexPath: NSIndexPath) {
-
+extension CategoryTableViewController: AddCategoryDelegate {
+    func addCategoryButtonPressed(controlHeader: AddCategoryHeader) {
+        performSegueWithIdentifier("addCategoryVC", sender: nil)
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(tableView: UITableView, canMoveRowAtIndexPath indexPath: NSIndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }

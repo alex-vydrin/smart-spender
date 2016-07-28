@@ -8,9 +8,11 @@
 
 import UIKit
 import CoreData
+import TKSwarmAlert
 
 class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     
+    let alert = TKSwarmAlert()
     var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
     
     private var tripName = String ()
@@ -77,9 +79,10 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
     }
     
     func doneButtonPressed(){
+        closeKeyboard ()
         
         guard !startDate.isGreaterThanDate(endDate) else {
-            presentAlertWith ("\"End date\" could't be earlier than \"Start date\"")
+            alert.show(type: .Blur, views: [MyAlertView(text: "\"End date\" could't be earlier than \"Start date\"")])
             return
         }
         
@@ -88,7 +91,7 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
             performSegueWithIdentifier("Trip Settings Segue", sender: nil)
             
         } else {
-            presentAlertWith("Trip name \"\(tripName)\" already exists")
+            alert.show(type: .Blur, views: [MyAlertView(text: "Trip name \"\(tripName)\" already exists")])
         }
     }
     
@@ -107,6 +110,8 @@ class AddNewTripViewController: UIViewController, UITextFieldDelegate {
             ) != NSComparisonResult.OrderedDescending {
             tripName = tripNameTaxtField.text!
             addDoneButton()
+        } else {
+            self.navigationItem.rightBarButtonItem = nil
         }
     }
     

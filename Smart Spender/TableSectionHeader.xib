@@ -16,13 +16,13 @@
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wLU-qx-TzI">
                             <rect key="frame" x="20" y="0.0" width="631" height="87"/>
-                            <color key="backgroundColor" red="0.84568941973625344" green="0.84568941973625344" blue="0.84568941973625344" alpha="1" colorSpace="calibratedRGB"/>
-                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
-                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                            <color key="backgroundColor" red="0.92899143949468088" green="0.92899143949468088" blue="0.92899143949468088" alpha="1" colorSpace="calibratedRGB"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.8456894197" green="0.8456894197" blue="0.8456894197" alpha="1" colorSpace="calibratedRGB"/>
+                    <color key="backgroundColor" red="0.92899143949999996" green="0.92899143949999996" blue="0.92899143949999996" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="wLU-qx-TzI" firstAttribute="leading" secondItem="c3v-Ef-I41" secondAttribute="leading" constant="20" symbolic="YES" id="7HC-Qg-Ra6"/>
                         <constraint firstAttribute="trailing" secondItem="wLU-qx-TzI" secondAttribute="trailing" id="D3l-32-sre"/>

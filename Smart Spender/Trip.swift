@@ -65,10 +65,10 @@ class Trip: NSManagedObject {
     }
     
     var averageSpending: Int {
-        if daysInTrip == 1 {
+        if daysInTrip == 1 || daysInTrip == 0 {
             return moneySpent
         } else {
-            return daysSpent == 0 ? 0 : moneySpent/daysSpent
+            return daysSpent == 0 ? moneySpent : moneySpent/daysSpent
         }
     }
     

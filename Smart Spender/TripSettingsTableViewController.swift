@@ -8,9 +8,12 @@
 
 import UIKit
 import CoreData
+import TKSwarmAlert
 
 class TripSettingsTableViewController: UITableViewController, UITextFieldDelegate {
 
+    let alert = TKSwarmAlert()
+    
     var managedObjectContext = (UIApplication.sharedApplication().delegate as? AppDelegate)?.managedObjectContext
     
     var name = ""
@@ -64,19 +67,20 @@ class TripSettingsTableViewController: UITableViewController, UITextFieldDelegat
     }
     
     func DoneButtonPressed(){
+        dismissKeyboard()
         
         guard !currentTrip.startDate.isGreaterThanDate(currentTrip.endDate) else {
-            presentAlertWith ("\"End date\" could't be earlier than \"Start date\"")
+            alert.show(type: .Blur, views: [MyAlertView(text: "\"End date\" could't be earlier than \"Start date\"")])
             return
         }
         
         guard nameTextField != "" else {
-            presentAlertWith ("Please enter Trip Name")
+            alert.show(type: .Blur, views: [MyAlertView(text: "Please enter Trip Name")])
             return
         }
         
         guard Trip.isUnique(name, inManagedObjectContext: managedObjectContext!) else {
-            presentAlertWith ("Trip name \"\(name)\" already exists")
+            alert.show(type: .Blur, views: [MyAlertView(text: "Trip name \"\(name)\" already exists")])
             return
 
         }
