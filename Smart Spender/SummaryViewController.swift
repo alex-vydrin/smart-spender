@@ -25,6 +25,7 @@ class SummaryViewController: UIViewController {
     @IBOutlet weak var moneyLeftLabel: UILabel!
     @IBOutlet weak var tripBudgetLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet var plusButton: UIButton!
     
     
     override func viewWillAppear(animated: Bool) {

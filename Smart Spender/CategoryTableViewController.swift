@@ -9,29 +9,32 @@
 import UIKit
 
 class CategoryTableViewController: UITableViewController {
-
-    private var standardCategories = ["Housing", "Food", "Transport", "Entertainment", "Miscellaneous"] {
-        didSet {
-            NSUserDefaults.standardUserDefaults().setObject(standardCategories, forKey: "categories")
-//            self.tableView.reloadData()
-        }
-    }
     
     private var categories: [String] {
         get {
-            let userCategories = NSUserDefaults.standardUserDefaults().objectForKey("categories") as? [String] ?? standardCategories
-            return userCategories
+            let userCategories = NSUserDefaults.standardUserDefaults().objectForKey("categories") as? [String]
+            return userCategories!
         }
         set {
             NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "categories")
         }
     }
     
+    private var categoryImages: [String] {
+        get {
+            return NSUserDefaults.standardUserDefaults().objectForKey("categoryImages") as! [String]
+        }
+        set {
+            NSUserDefaults.standardUserDefaults().setObject(newValue, forKey: "categoryImages")
+        }
+    }
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpNavigationBar ()
-        self.tableView.tableFooterView = UIView(frame: CGRectZero)
-        self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
     
     private func setUpNavigationBar () {
@@ -40,6 +43,7 @@ class CategoryTableViewController: UITableViewController {
         self.navigationController!.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.whiteColor()]
         self.navigationController?.navigationBar.tintColor = UIColor.whiteColor()
         self.navigationController?.navigationBar.translucent = false
+        self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
     // MARK: - Table view data source
@@ -63,15 +67,15 @@ class CategoryTableViewController: UITableViewController {
         header.setUpButton ()
         header.delegate = self
         header.center = view.center
-        
         return header
     }
     
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath)
-
-        cell.textLabel?.text = categories[indexPath.row]
-
+        let cell = tableView.dequeueReusableCellWithIdentifier("Cell", forIndexPath: indexPath) as! CategoryCell
+        cell.categoryName.text = categories[indexPath.row]
+        cell.pictureView.image = UIImage(named: categoryImages[indexPath.row])
+        cell.pictureView.layer.masksToBounds = true
+        cell.pictureView.layer.cornerRadius = cell.pictureView.bounds.width/2
         return cell
     }
     
@@ -87,6 +91,7 @@ class CategoryTableViewController: UITableViewController {
     override func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
         if editingStyle == .Delete {
             categories.removeAtIndex(indexPath.row)
+            categoryImages.removeAtIndex(indexPath.row)
             tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: .Fade)
         } else if editingStyle == .Insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
@@ -99,4 +104,11 @@ extension CategoryTableViewController: AddCategoryDelegate {
     func addCategoryButtonPressed(controlHeader: AddCategoryHeader) {
         performSegueWithIdentifier("addCategoryVC", sender: nil)
     }
+}
+
+class CategoryCell: UITableViewCell {
+    
+    @IBOutlet var categoryName: UILabel!
+    @IBOutlet var pictureView: UIImageView!
+    
 }

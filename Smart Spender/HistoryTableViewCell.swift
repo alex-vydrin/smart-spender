@@ -13,6 +13,7 @@ class HistoryTableViewCell: UITableViewCell {
     @IBOutlet var amountLabel: UILabel!
     @IBOutlet var categoryLabel: UILabel!
     @IBOutlet var timeLabel: UILabel!
+    @IBOutlet var categoryPicture: UIImageView!
         
     override func awakeFromNib() {
         super.awakeFromNib()

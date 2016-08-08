@@ -59,13 +59,3 @@ extension NSDate {
         return dateWithHoursAdded
     }
 }
-
-extension IntegerType {
-    var stringWithSepator: String {
-        let formatter = NSNumberFormatter()
-        formatter.groupingSeparator = " "
-        formatter.numberStyle = .DecimalStyle
-        
-        return formatter.stringFromNumber(hashValue) ?? ""
-    }
-}

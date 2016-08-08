@@ -15,7 +15,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+        let path = NSBundle.mainBundle().pathForResource("DefaultPreferences", ofType: "plist")
+        let defaultPrefs = NSDictionary(contentsOfFile: path!) as! [String:AnyObject]
+        NSUserDefaults.standardUserDefaults().registerDefaults(defaultPrefs)
         return true
     }
 

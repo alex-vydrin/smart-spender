@@ -140,11 +140,7 @@ class Trip: NSManagedObject {
     }
     
     func getSpendingsArray() -> [[Spendings]] {
-        
-        var arrFilter = [String]()
-        var filteredSpendings = [Spendings]()
         var multiArr = [[Spendings]]()
-        
         self.managedObjectContext?.performBlockAndWait{
             let request = NSFetchRequest(entityName: "Spendings")
             let descriptor = NSSortDescriptor(key: "date", ascending: false)
@@ -153,31 +149,13 @@ class Trip: NSManagedObject {
             
             if let spendingsArr = (try? self.managedObjectContext!.executeFetchRequest(request)) as? [Spendings] {
                 self.dateFormatter.dateFormat = "dd MMMM"
-                
-                for (_, spending) in spendingsArr.enumerate() {
-                    let dateStr = self.dateFormatter.stringFromDate(spending.date!)
-                    
-                    if !arrFilter.contains(dateStr) {
-                        arrFilter.append(dateStr)
-                        filteredSpendings.append(spending)
-                    }
-                }
-                
-                for (_, filterItem) in arrFilter.enumerate() {
-                    
-                    var buffer: [Spendings] = []
-                    
-                    for (_, currentItem) in spendingsArr.enumerate() {
-                        if self.dateFormatter.stringFromDate(currentItem.date!) == filterItem {
-                            buffer.append(currentItem)
-                        }
-                    }
-                    
-                    multiArr.append(buffer)
+                let days = Array(Set(spendingsArr.map{self.dateFormatter.stringFromDate($0.date!)}))
+                for day in days {
+                    multiArr.append(spendingsArr.filter{self.dateFormatter.stringFromDate($0.date!) == day})
                 }
             }
         }
-        return multiArr
+        return multiArr.sort{$0.first!.date!.compare($1.first!.date!) == .OrderedDescending}
     }
 
     

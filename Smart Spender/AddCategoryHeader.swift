@@ -36,7 +36,6 @@ class AddCategoryHeader: UITableViewHeaderFooterView {
         button.backgroundColor = UIColor.clearColor()
     }
     
-    
     func addNewCategory() {
         delegate?.addCategoryButtonPressed(self)
     }
