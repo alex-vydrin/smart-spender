@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import DZNEmptyDataSet
 
 class HistoryTableViewController: UITableViewController {
 
@@ -41,6 +42,10 @@ class HistoryTableViewController: UITableViewController {
         
         let nib = UINib(nibName: "TableSectionHeader", bundle: nil)
         tableView.registerNib(nib, forHeaderFooterViewReuseIdentifier: "TableSectionHeader")
+        
+        tableView.emptyDataSetSource = self
+        tableView.emptyDataSetDelegate = self
+        tableView.tableFooterView = UIView()
     }
 
     struct Constants {
@@ -52,32 +57,26 @@ class HistoryTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return currentTrip.getSpendingsArray().isEmpty ? 1 : currentTrip.getSpendingsArray().count
+        return currentTrip.getSpendingsArray().isEmpty ? 0 : currentTrip.getSpendingsArray().count
     }
     
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return currentTrip.getSpendingsArray().isEmpty ? 1 : currentTrip.getSpendingsArray()[section].count
+        return currentTrip.getSpendingsArray().isEmpty ? 0 : currentTrip.getSpendingsArray()[section].count
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
         formatter.dateFormat = "HH:mm"
-        
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! HistoryTableViewCell
-        let category = currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].category!
-        let image = (category == "Uncategorized") ? UIImage(named: "Pic1") : UIImage(named: categoryImages[categories.indexOf(category)!])
         if currentTrip.moneySpent != 0 {
+            let category = currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].category!
+            let image = (category == "Uncategorized") ? UIImage(named: "Pic1") : UIImage(named: categoryImages[categories.indexOf(category)!])
             cell.amountLabel.text = "\(Int (currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].amount!).stringWithSepator) \(currentTrip.currency!)"
             cell.timeLabel.text = formatter.stringFromDate (currentTrip.getSpendingsArray()[indexPath.section][indexPath.row].date!)
             cell.categoryLabel.text = category
             cell.categoryPicture.image = image
             cell.categoryPicture.layer.masksToBounds = true
             cell.categoryPicture.layer.cornerRadius = cell.categoryPicture.bounds.width / 2
-        } else {
-            cell.textLabel?.text = "No spendings yet..."
-            cell.amountLabel.text = ""
-            cell.timeLabel.text = ""
-            cell.categoryLabel.text = ""
         }
         
         return cell
@@ -96,4 +95,37 @@ class HistoryTableViewController: UITableViewController {
         return cell
     }
     
+}
+
+extension HistoryTableViewController: DZNEmptyDataSetSource, DZNEmptyDataSetDelegate {
+    func emptyDataSetShouldDisplay(scrollView: UIScrollView!) -> Bool {
+        return currentTrip.moneySpent == 0
+    }
+    
+    func descriptionForEmptyDataSet(scrollView: UIScrollView!) -> NSAttributedString! {
+        let str = "No spendings yet..."
+        let attrs = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleBody)]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func buttonTitleForEmptyDataSet(scrollView: UIScrollView!, forState state: UIControlState) -> NSAttributedString! {
+        let str = "Start Spending"
+        let attrs = [NSFontAttributeName: UIFont.preferredFontForTextStyle(UIFontTextStyleCallout),NSForegroundColorAttributeName:UIColor.blueColor()]
+        return NSAttributedString(string: str, attributes: attrs)
+    }
+    
+    func emptyDataSetDidTapButton(scrollView: UIScrollView!) {
+        let ac = UIAlertController(title: "Button tapped!", message: nil, preferredStyle: .Alert)
+        ac.addAction(UIAlertAction(title: "Hurray", style: .Default, handler: nil))
+        presentViewController(ac, animated: true, completion: nil)
+    }
+    
+    func imageForEmptyDataSet(scrollView: UIScrollView!) -> UIImage! {
+        let image = UIImage(named: "money")
+        image?.drawInRect(CGRect(x: 100, y: 100, width: 100, height: 100))
+        return image
+    }
+    
+    
+
 }

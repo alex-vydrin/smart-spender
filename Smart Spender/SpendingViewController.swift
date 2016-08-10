@@ -51,7 +51,6 @@ class SpendingViewController: UIViewController {
         moneySpentLabel.text = currentTrip.stringFrom(.moneySpent)
         daysSpent.text = currentTrip.stringFrom(.daysSpent)
         daysLeft.text = currentTrip.daysLeft
-        
         let formatter = NSDateFormatter()
         formatter.dateFormat = "dd MMMM yyyy"
         dateLabel.text = formatter.stringFromDate(NSDate())
